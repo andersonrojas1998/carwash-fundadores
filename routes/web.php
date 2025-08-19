@@ -25,6 +25,8 @@ Route::get('/clear-cache', function() {
 Route::any('/{page?}',function(){
     return View::make('pages.error-pages.error-404');
 })->where('page','.*');*/
+
+
 Auth::routes();
 
 Route::group(['middleware' => ['auth']], function () {    
@@ -37,4 +39,10 @@ Route::group(['middleware' => ['auth']], function () {
     require (__DIR__ . '/rt_sell.php');
     require (__DIR__ . '/rt_pay.php');
     require (__DIR__ . '/rt_client.php');
+
+
+    Route::get('/change-password', function() {
+        return view('auth.change_password');
+    })->name('password.change');
+    Route::post('/change-password','ChangePasswordController@update')->name('password.update');
 });

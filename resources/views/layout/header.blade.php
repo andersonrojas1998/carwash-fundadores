@@ -127,7 +127,7 @@
               </div>
             </div>
           </a>          
-          <a class="dropdown-item">Cambio Contraseña</a>
+          <a class="dropdown-item" id="btn_change_password">Cambio Contraseña</a>
           <a class="dropdown-item">
               <form id="logout-form" action="{{ url('/logout') }}" method="POST" >
 			        {{ csrf_field() }}
