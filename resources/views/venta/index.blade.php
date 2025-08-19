@@ -118,7 +118,7 @@
 
 @endsection
 @push('custom-scripts')
-    {!! Html::script('js/validate.min.js') !!}
-    {!! Html::script('js/validator.messages.js') !!}
+    {{-- {!! Html::script('js/validate.min.js') !!} --}}
+    {{-- {!! Html::script('js/validator.messages.js') !!} --}}
     {!! Html::script('lib/sell.js') !!}
 @endpush
