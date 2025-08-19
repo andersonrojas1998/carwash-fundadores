@@ -74,7 +74,7 @@
                         <label for="input_payment_method">Medio de Pago&nbsp;:</label>
                         <select class="select2" name="medio_pago" id="input_payment_method" style="width: 100%">
                             <option value="Efectivo" data-icon="mdi mdi-cash" selected>Efectivo</option>
-                            <option value="Nequi" data-icon="mdi mdi-cellphone" >Nequi</option>
+                            <option value="Trasferencia" data-icon="mdi mdi-cellphone" >Trasferencia</option>
                         </select>
                     </div>
                 </div>

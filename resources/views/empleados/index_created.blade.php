@@ -26,8 +26,8 @@
 
 
         <div class="col-lg-4">
-        <strong >Email :  <span class="text-danger">*</span></strong>
-            <input class="form-control" type="email" name="email" placeholder="administrador@inmode.edu.co"  required>
+        <strong >Email : </strong>
+            <input class="form-control" type="email" name="email" placeholder="administrador@inmode.edu.co">
             <p class="text-muted">Por favor ingrese email</p>
         </div>
       </div>
@@ -35,8 +35,8 @@
 
        <div class="row">
        <div class="col-lg-4">
-        <label for="celular" >Celular:  <span class="text-danger">*</span></strong>
-            <input class="form-control" name="celular" type="number" required>
+        <label for="celular" >Celular: </strong>
+            <input class="form-control" name="celular" type="number" >
             <p class="text-muted">Por favor ingrese celular de contacto</p>
         </div>
 

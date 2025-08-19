@@ -5,15 +5,15 @@
         <div class="d-flex justify-content-between bd-highlight mb-3">
             <div class="d-flex justify-content-start bd-highlight">
                 <div class="p-4 bg-light">
-                    <h4>COMPRAS Y PAGOS    <i class="mdi mdi-cash"></i></h4>
+                    <h4>PAGOS  REALIZADOS   <i class="mdi mdi-cash"></i></h4>
                 </div>
             </div>
             <div class="d-flex justify-content-end bd-highlight">
-                <div class="pr-3 pt-3">
+                <!--<div class="pr-3 pt-3">
                     <a href="{{route('compra.create')}}" class="text-body" title="Crear compra">
                         <span class="mdi mdi-plus-circle-outline mdi-36px"></span>
                     </a>
-                </div>
+                </div>-->
                 <div class="pr-3 pt-3">
                     <a href="/pago/inicio" class="text-body" title="Crear Pago">
                         <span class="mdi mdi-alert-octagram mdi-36px"></span>

@@ -9,7 +9,7 @@
             <div class="card-body">
                 <div class="row">
                     <div class="col-lg-4">
-                        <label for="reg_op_compra_edit">Reg op&nbsp;:</label>
+                        <label for="reg_op_compra_edit"># de Factura:</label>
                         <input type="text" id="reg_op_compra_edit" name="reg_op" class="form-control text-uppercase" placeholder="Ingrese el Reg op de la compra" value="{{$compra->reg_op}}" required>
                         <input type="hidden" id="id_compra" name="id" value="{{$compra->id}}">
                     </div>
@@ -20,7 +20,7 @@
                     </div>
 
                     <div class="col-lg-4">
-                        <label for="compracol_edit" class="control-label">Compracol&nbsp;:</label>
+                        <label for="compracol_edit" class="control-label">Descripci&oacute;n&nbsp;:</label>
                         <input type="text" id="compracol_edit" name="compracol" class="form-control text-uppercase" placeholder="Ingrese la compracol de la compra" value="{{$compra->compracol}}" required>
                     </div>
                 </div>
