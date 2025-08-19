@@ -1,13 +1,13 @@
 <?php
 namespace App\Http\Controllers;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
 class ChangePasswordController extends Controller
 {
     public function update(Request $request)
-    {
-        dd("dfdfdfd");      
+    {   
         $request->validate([
             'current_password' => 'required',
             'new_password' => 'required|confirmed|min:6',
