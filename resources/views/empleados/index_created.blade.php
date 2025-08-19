@@ -85,6 +85,12 @@
             </select>
             <p class="text-muted">Por favor seleccione el cargo</p>
         </div>
+
+        <div class="col-lg-4">
+            <strong>Contraseña: <span class="text-danger">*</span></strong>
+            <input class="form-control" name="password" type="password" required>
+            <p class="text-muted">Por favor ingrese la contraseña</p>
+        </div>
       </div>
       <hr>
 <br>

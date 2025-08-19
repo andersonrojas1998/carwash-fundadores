@@ -2,6 +2,10 @@ $(document).ready(function() {
 
 
      $('#clientes-table').DataTable({
+         dom: 'Bfrtip',
+        buttons: [
+            'csv', 'excel', 'pdf'
+        ],
         ajax: {
             url: '/clientes',
             type: 'GET',

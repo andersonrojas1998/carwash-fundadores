@@ -259,7 +259,9 @@ var dt_sales_user=function(){
                 { "data": "name",render(data,type,row){ return data; }},                
                 {"data": "cant_servicios", render(data){  return  '<h4>'+ data +'</h4>'; }},
                 {"data": "pagos", render(data){  return  '<h4><label class="badge text-white badge-success">'+ data +'</label></h4>'; }},            
-                {"data": "pendiente", render(data){  return  '<h4><label class="badge text-black badge-warning">'+ data +'</label></h4>'; }},
+                {"data": "pendiente", render(data){  
+                    return  (data==0)? data:'<h4><label class="badge text-black badge-warning">'+ data +'</label></h4>';
+                 }},
                 {"data": "pend_pago", render(data){  return  '<h4> $ '+ data +'</h4>'; }},
                 {"data": "", 
                     render(data,ps,d){ 

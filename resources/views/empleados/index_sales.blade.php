@@ -91,14 +91,14 @@
                 <table class="table table-striped text-center">
                   <thead>
                     <tr>
-                      <th>Servicios Prestados</th>
-                      <th>Venta de Productos Lubriteca</th>
+                      <th colspan="2">Servicios Prestados</th>
+                      {{-- <th>Venta de Productos Lubriteca</th> --}}
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
-                      <td class="tbl-income-service">$ 0</td>
-                      <td class="tbl-income-prd">$ 0</td>
+                    <tr >
+                      <td colspan="2" class="tbl-income-service">$ 0</td>
+                      {{-- <td class="tbl-income-prd">$ 0</td> --}}
                     </tr>
                     <tr>
                       <th>TOTAL: </th>

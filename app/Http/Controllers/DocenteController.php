@@ -135,7 +135,7 @@ class DocenteController extends Controller
                 'identificacion' =>Request::input('identificacion'),
                 'name' => Request::input('name'),
                 'email'=>Request::input('email'),
-                'password'=> \Hash::make('123456'),
+                'password'=> \Hash::make(Request::input('password')),
                 'direccion'=>Request::input('direccion'),
                 'telefono'=>Request::input('telefono'),
                 'celular'=>Request::input('celular'),                
