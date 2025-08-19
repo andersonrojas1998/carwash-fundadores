@@ -1,12 +1,8 @@
 $(document).ready(function() {
 
-
-
   $(document).on('click', '#btn_change_password', function() {
     window.location.href = '/change-password';
   });
-
-
   if(window.innerWidth < 768){
 
     if($('.btn-w-all').length){
