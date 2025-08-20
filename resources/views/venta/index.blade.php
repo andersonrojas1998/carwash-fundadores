@@ -105,15 +105,15 @@
                                 data-toggle="modal" 
                                 data-target="#modal_finalizar_venta">
                                 <i class="mdi text-success mdi mdi-cash-multiple mdi-24px"></i>
-                            </a>
+                            </a>&nbsp;&nbsp;
                         @endif
                         @if($venta->estado_venta->id<>2 &&  $venta->estado_venta->id<>3 && $venta->estado<>'finalizado')
                             <a id="btn_show_change_user" data-venta="{{ $venta->id }}" data-id="{{ $venta->user->id }}" title="Cambio de Prestador" data-toggle="modal" data-target="#modal_edit_user_service"    data-toggle="tooltip">
                                 <i class="mdi mdi-account-convert text-primary mdi-24px"></i>
-                            </a>
+                            </a>&nbsp;&nbsp;
                             <a href="{{route('venta.edit',[$venta->id])}}" data-venta="{{ $venta->id }}" data-id="{{ $venta->user->id }}" title="Editar Venta"   data-toggle="tooltip">
                                 <i class="mdi mdi-pencil-box-outline text-primary mdi-24px"></i>
-                            </a>
+                            </a>&nbsp;&nbsp;
                         @endif                           
                             <a href="{{route('venta.show',[$venta->id])}}" title="Ver detalle" data-toggle="tooltip">
                                 <i class="mdi mdi-point-of-sale text-warning mdi-24px"></i>
