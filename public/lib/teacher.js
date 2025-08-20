@@ -185,6 +185,22 @@ $(document).ready(function() {
         dt_pay_pending(id,1);
     });  
 
+    $('#form_checkin').on('submit', function(e) {
+        e.preventDefault();
+        var form = $(this);
+        $.ajax({
+            url: '/checkin-employe',
+            type: 'POST',
+            data: form.serialize(),
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+            success: function(response) {
+                if(response.success){
+                    $('#mdl_checkin').modal('hide');
+                    location.reload();
+                }
+            }
+        });
+    });
 });
 
 
@@ -314,3 +330,23 @@ var dt_pay_pending=function(id,status){
         ],        
     });    
 }
+
+$(document).on('click', '.btn_toggle_estado', function() {
+    var id = $(this).data('id');
+    var estado = $(this).data('estado');
+    $.ajax({
+        url: '/checkin-employe/estado',
+        type: 'POST',
+        data: {
+            id: id,
+            estado: estado,
+            _token: $('input[name="_token"]').val()
+        },
+        success: function(response) {
+            if(response.success){
+                sweetMessage('¡Listo!', 'Estado actualizado correctamente');
+                setTimeout(function(){ location.reload(); }, 1000);
+            }
+        }
+    });
+});

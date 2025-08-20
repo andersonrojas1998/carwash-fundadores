@@ -16,3 +16,8 @@ Route::get('/income_store/{dateini}/{dateend}', 'ReportsController@income_store'
 Route::get('/showTeacher', 'DocenteController@showTeacher');
 Route::get('/showGradesAssign', 'DocenteController@gradeAssignments');
 Route::get('/assignmentCourseTeacher', 'DocenteController@assignmentCourseTeacher');
+
+
+Route::get('/checkin-employe', 'LlegadaLavadorController@index')->name('checkin.index');
+Route::post('/checkin-employe', 'LlegadaLavadorController@store')->name('checkin.store');
+Route::post('/checkin-employe/estado', 'LlegadaLavadorController@cambiarEstado')->name('checkin.estado');

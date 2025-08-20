@@ -376,7 +376,7 @@ $(function(){
             data:{'id_user':id_user,'id_venta':id_venta},
             headers: {'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')},            
             success:function(data){
-                if(data==1){
+                if(data.success){
                     sweetMessage('\u00A1Registro exitoso!', '\u00A1 Se ha realizado con \u00E9xito su solicitud!');
                     setTimeout(function () { location.reload() }, 2000)
                    }
@@ -485,6 +485,38 @@ $(document).on('blur', '#input_license_plate', function() {
             }
         });
     }
+});
+
+$(document).on('click', '.btn-finalizar-venta', function() {
+    var id = $(this).data('id');
+    var medio_pago = $(this).data('medio_pago');
+    $('#finalizar_id_venta').val(id);
+    $('#finalizar_medio_pago').val(medio_pago).trigger('change');
+    $('#modal_finalizar_venta').modal('show');
+});
+
+$('#form_finalizar_venta').on('submit', function(e) {
+    e.preventDefault();
+    var id_venta = $('#finalizar_id_venta').val();
+    var medio_pago = $('#finalizar_medio_pago').val();
+    $.ajax({
+        url: '/venta/finalizar',
+        type: 'POST',
+        data: {
+            id_venta: id_venta,
+            medio_pago: medio_pago,
+            _token: $('meta[name="_token"]').attr('content')
+        },
+        success: function(data) {
+            if(data.success){
+                sweetMessage('¡Venta finalizada!', 'La venta ha sido finalizada correctamente');
+                $('#modal_finalizar_venta').modal('hide');
+                setTimeout(function(){ location.reload(); }, 1500);
+            } else {
+                sweetMessage('Error', 'No se pudo finalizar la venta', 'error');
+            }
+        }
+    });
 });
 
 

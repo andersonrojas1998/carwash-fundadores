@@ -17,12 +17,15 @@
                             <input type="hidden" id="id_venta">
                         <label for="">
                             Atendido Por : 
-                           </label>
-                           <select id="user_service" class="select2"  style="width: 100%">
-                            @foreach($usuarios as $u)                                
-                                 <option value="{{ $u->id }}">{{ $u->name }}</option>
+                        </label>
+                        <select id="user_service" class="select2" style="width: 100%">
+                            @foreach($llegadas as $llegada)
+                                <option value="{{ $llegada->empleado->id }}"
+                                    {{ $llegada->estado == 'activo' ? 'selected' : '' }}>
+                                    {{ $llegada->empleado->name }} ({{ ucfirst($llegada->estado) }})
+                                </option>
                             @endforeach
-                           </select>
+                        </select>
                         </div>
                         </div>
                         <br>                                                   

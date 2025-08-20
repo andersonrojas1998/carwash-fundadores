@@ -22,26 +22,24 @@
             </div>
         </div>
         <div class="table-responsive">
-            <table class="table table-striped table-sm" id="table-sell">
-                <thead>
+            <table class="table table-hover table-borderless shadow-sm rounded" id="table-sell">
+                <thead class="bg-light">
                     <tr>
-                        <th>#</th>
                         <th>Fecha</th>
                         <th>Cliente</th>
                         <th>Placa</th>
-                        <th># Telefono</th>
-                        <th>Tipo vehiculo</th>
+                        <th># Teléfono</th>
+                        <th>Tipo vehículo</th>
                         <th>Atendido por</th>
-                        <th>Valor Total.</th>
-                        <th>Estado</th>
-                        <th></th>
+                        <th>Valor Total</th>
+                        <th class="text-center">Estado</th>
+                        <th class="text-center"></th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach($ventas as $venta)
 
                     <tr>
-                        <th>{{$venta->id}}</th>
                         <td>{{date('Y-m-d h:i',strtotime($venta->fecha) )}}</td>
                         <th class="text-primary">{{$venta->cliente->nombre}}</th>
                         <th>
@@ -75,16 +73,41 @@
                             @endif
                         </td>
                         <th class="text-danger">$ {{ number_format($venta->total_venta,0,',','.')}}</th>
-                        <td>
-                            @php $color="danger"; 
-                            if($venta->estado_venta->id==1) 
-                                $color="primary"; 
-                             else $color="success";
-                            @endphp
-                        <label class="badge  badge-lg text-white badge-{{$color}}">{{$venta->estado_venta->nombre  }}</label>
+                        <td class="text-center align-middle">
+                            @if($venta->estado=='pendiente')
+                                <span title="Pendiente" class="estado-icon bg-warning-soft rounded-circle p-2">
+                                    <i class="mdi mdi-timer-sand text-warning mdi-24px"></i>
+                                </span>
+                            @elseif($venta->estado=='en_proceso')
+                                <span title="En proceso" class="estado-icon bg-info-soft rounded-circle p-2">
+                                    <i class="mdi mdi-car-wash text-info mdi-24px"></i>
+                                </span>
+                            @elseif($venta->estado=='finalizado')
+                                <span title="Finalizado" class="estado-icon bg-success-soft rounded-circle p-2">
+                                    <i class="mdi mdi-check-circle-outline text-success mdi-24px"></i>
+                                </span>
+                            @elseif($venta->estado=='cancelado')
+                                <span title="Cancelado" class="estado-icon bg-danger-soft rounded-circle p-2">
+                                    <i class="mdi mdi-close-circle-outline text-danger mdi-24px"></i>
+                                </span>
+                            @else
+                                <span title="Otro" class="estado-icon bg-secondary-soft rounded-circle p-2">
+                                    <i class="mdi mdi-help-circle-outline text-secondary mdi-24px"></i>
+                                </span>
+                            @endif
                         </td>
                         <td>
-                        @if($venta->estado_venta->id<>2 &&  $venta->estado_venta->id<>3)
+                        @if($venta->estado=='en_proceso')
+                             <a class=" btn-finalizar-venta" 
+                                title="Finalizar Venta"   data-toggle="tooltip"
+                                data-id="{{ $venta->id }}" 
+                                data-medio_pago="{{ $venta->medio_pago ?? '' }}"
+                                data-toggle="modal" 
+                                data-target="#modal_finalizar_venta">
+                                <i class="mdi text-success mdi mdi-cash-multiple mdi-24px"></i>
+                            </a>
+                        @endif
+                        @if($venta->estado_venta->id<>2 &&  $venta->estado_venta->id<>3 && $venta->estado<>'finalizado')
                             <a id="btn_show_change_user" data-venta="{{ $venta->id }}" data-id="{{ $venta->user->id }}" title="Cambio de Prestador" data-toggle="modal" data-target="#modal_edit_user_service"    data-toggle="tooltip">
                                 <i class="mdi mdi-account-convert text-primary mdi-24px"></i>
                             </a>
@@ -103,7 +126,7 @@
         </div>
     </div>
     @include('venta.mdl_changeUser')
-
+    @include('venta.mdl_finalizar_venta')
     @if(session('success'))
         <input type="hidden" id="succes_message" value="{{session('success')}}">
     @endif
@@ -117,8 +140,22 @@
 
 
 @endsection
+@push('styles')
+<style>
+    .bg-warning-soft { background: #fff8e1; }
+    .bg-info-soft { background: #e3f2fd; }
+    .bg-success-soft { background: #e8f5e9; }
+    .bg-danger-soft { background: #ffebee; }
+    .bg-secondary-soft { background: #ececec; }
+    .estado-icon { display: inline-block; min-width: 40px; min-height: 40px; text-align: center; vertical-align: middle; }
+    .table th, .table td { vertical-align: middle !important; }
+    .table thead th { border-bottom: 2px solid #eaeaea; }
+    .table-hover tbody tr:hover { background: #f6f6f6; }
+    .rounded { border-radius: 12px !important; }
+    .shadow-sm { box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+</style>
+
+@endpush
 @push('custom-scripts')
-    {{-- {!! Html::script('js/validate.min.js') !!} --}}
-    {{-- {!! Html::script('js/validator.messages.js') !!} --}}
     {!! Html::script('lib/sell.js') !!}
 @endpush

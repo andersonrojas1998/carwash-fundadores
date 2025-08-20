@@ -55,13 +55,16 @@
 
                 <div class="d-flex justify-content-around mb-3 pb-3">
                     <div class="col-lg-4">
-                        <label>¿Qui&eacute;n presta el servicio?&nbsp;:</label>
-                        <select class="select2" name="id_usuario" style="width: 100%">
-                            @foreach($usuarios as $usuario)
-                            <option value="{{$usuario->id}}" {{ ($usuario->id==17)? 'selected':'' }}>{{$usuario->name}}</option>
-                            @endforeach
-                        </select>
-                    </div>
+                    <label>¿Quién presta el servicio?&nbsp;:</label>
+                    <select class="select2" name="id_usuario" style="width: 100%">
+                        @foreach($llegadas as $llegada)
+                            <option value="{{ $llegada->empleado->id }}"
+                                {{ ($lavadorTurno && $lavadorTurno->empleado->id == $llegada->empleado->id) ? 'selected' : '' }}>
+                                {{ $llegada->empleado->name }} ({{ $llegada->estado }})
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
                   <!--  <div class="col-lg-4">
                         <label for="type-sale">Tipo de venta</label>
                         <select class="custom-select" name="id_estado_venta" id="type-sale">
@@ -73,8 +76,9 @@
                     <div class="col-lg-4">
                         <label for="input_payment_method">Medio de Pago&nbsp;:</label>
                         <select class="select2" name="medio_pago" id="input_payment_method" style="width: 100%">
-                            <option value="Efectivo" data-icon="mdi mdi-cash" selected>Efectivo</option>
-                            <option value="Trasferencia" data-icon="mdi mdi-cellphone" >Trasferencia</option>
+                            <option value="pendiente_pago" data-icon="mdi mdi-cash" selected>Pendiente Pago</option>
+                            <option value="efectivo" data-icon="mdi mdi-cash">Efectivo</option>
+                            <option value="transferencia" data-icon="mdi mdi-cellphone" >Transferencia</option>
                         </select>
                     </div>
                 </div>

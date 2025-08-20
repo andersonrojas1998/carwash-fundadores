@@ -20,9 +20,35 @@ class VentaController extends Controller
 {
     public function index()
     {
-        $ventas =  Venta::orderBy('id','desc')->get()->take(500);
-        $usuarios = users::select("users.*")->join("roles as r", "cargo", "r.id")->where("r.slug", "Lavador")->get();
-        return view('venta.index', compact('ventas','usuarios'));
+        $ventas = Venta::orderBy('id', 'desc')->take(500)->get();
+        // Lógica para trabajadores disponibles y orden de llegada
+        $hoy = date('Y-m-d');
+        $llegadas = \App\Model\LlegadaLavador::whereDate('hora_llegada', $hoy)
+            ->with('empleado')
+            ->orderBy('hora_llegada', 'asc')
+            ->get();
+
+        // Verificar si todos están inactivos
+        $todosInactivos = $llegadas->count() > 0 && $llegadas->where('estado', 'activo')->count() == 0;
+
+        // Si todos están inactivos, agregar el usuario "Sin Prestador" (ID 17)
+        if ($todosInactivos) {
+            $sinPrestador = \App\Model\users::where('name', 'Sin Prestador')->first();
+            if ($sinPrestador) {
+                $llegadaFake = new \stdClass();
+                $llegadaFake->empleado = $sinPrestador;
+                $llegadaFake->estado = 'ocupado';
+                $llegadas->push($llegadaFake);
+                $lavadorTurno = $llegadaFake;
+            } else {
+                $lavadorTurno = null;
+            }
+        } else {
+            // El turno es el primero activo
+            $lavadorTurno = $llegadas->where('estado', 'activo')->first();
+        }
+
+        return view('venta.index', compact('ventas', 'llegadas'));
     }
 
     public function create()
@@ -30,9 +56,37 @@ class VentaController extends Controller
         $tipos_vehiculo = TipoVehiculo::all();
         $date = Carbon::now();
         $date->setTimezone('America/Bogota');
-        $productos=DB::SELECT("CALL sp_products('1,2')  ");
-        $usuarios = users::select("users.*")->join("roles as r", "cargo", "r.id")->where("r.slug", "Lavador")->get();
-        return view('venta.create', compact('tipos_vehiculo', 'date', 'productos', 'usuarios'));
+        $productos = DB::SELECT("CALL sp_products('1,2')");
+
+        // Empleados que llegaron hoy
+        $hoy = date('Y-m-d');
+        $llegadas = \App\Model\LlegadaLavador::whereDate('hora_llegada', $hoy)
+            ->with('empleado')
+            ->orderBy('hora_llegada', 'asc')
+            ->get();
+
+        // Verificar si todos están inactivos
+        $todosInactivos = $llegadas->count() > 0 && $llegadas->where('estado', 'activo')->count() == 0;
+
+        // Si todos están inactivos, agregar el usuario "Sin Prestador" (ID 17)
+        if ($todosInactivos) {
+            $sinPrestador = \App\Model\users::where('name', 'Sin Prestador')->first();
+            if ($sinPrestador) {
+                // Creamos un objeto simulado de llegada para mostrar en el select
+                $llegadaFake = new \stdClass();
+                $llegadaFake->empleado = $sinPrestador;
+                $llegadaFake->estado = 'ocupado';
+                $llegadas->push($llegadaFake);
+                $lavadorTurno = $llegadaFake;
+            } else {
+                $lavadorTurno = null;
+            }
+        } else {
+            // El turno es el primero activo
+            $lavadorTurno = $llegadas->where('estado', 'activo')->first();
+        }
+
+        return view('venta.create', compact('tipos_vehiculo', 'date', 'productos', 'llegadas', 'lavadorTurno'));
     }
 
     public function createMarket()
@@ -79,14 +133,29 @@ class VentaController extends Controller
 
             $status = (isset($data['id_producto']) && !isset($data['id_detalle_paquete'])) ? 3 : 1;
 
+            // Determinar estado de la venta según el usuario
+            $usuario = \App\Model\users::find($data['id_usuario']);
+            $estado_venta = ($usuario && $usuario->name == 'Sin Prestador') ? 'pendiente' : 'en_proceso';
+
             $venta = new Venta($data);
             $venta->fecha = now()->setTimezone('America/Bogota');
             $venta->id_estado_venta = $status;
+            $venta->estado = $estado_venta; // Guardar el estado de la venta
             $venta->total_venta = floatval($data['importe_total']);
             $venta->precio_venta_paquete = isset($data['precio_venta_paquete']) ? floatval($data['precio_venta_paquete']) : 0;
             $venta->porcentaje_paquete = isset($data['porcentaje_paquete']) ? intval($data['porcentaje_paquete']) : 0;
-            $venta->id_cliente = $cliente->id; // Guardar el id_cliente
+            $venta->id_cliente = $cliente->id;
             $venta->save();
+
+            $llegadaLavador = \App\Model\LlegadaLavador::where('id_empleado', $venta->id_usuario)
+                ->whereDate('hora_llegada', date('Y-m-d'))
+                ->where('estado', 'activo')
+                ->first();
+
+            if ($llegadaLavador) {
+                $llegadaLavador->estado = 'ocupado';
+                $llegadaLavador->save();
+            }
 
             if (!empty($data['id_producto'])) {
                 foreach ($data['id_producto'] as $key => $id_producto) {
@@ -135,18 +204,38 @@ class VentaController extends Controller
     }
 
 
-    public function updateUser(){
-       
-            DB::table('venta')
-            ->where('id', intval(\Request::input('id_venta')))            
-            ->update([
-                'id_usuario' =>intval(\Request::input('id_user'))                         
-                ]
-        );
-        return 1;
+    public function updateUser()
+    {
+        DB::beginTransaction();
+        try {
+            $id_venta = intval(\Request::input('id_venta'));
+            $id_user = intval(\Request::input('id_user'));
 
+            // Actualizar venta
+            $venta = Venta::find($id_venta);
+            if ($venta) {
+                $venta->id_usuario = $id_user;
+                $venta->estado = 'en_proceso';
+                $venta->save();
 
+                // Actualizar estado del lavador
+                $llegadaLavador = \App\Model\LlegadaLavador::where('id_empleado', $id_user)
+                    ->whereDate('hora_llegada', date('Y-m-d'))
+                    ->where('estado', 'activo')
+                    ->first();
 
+                if ($llegadaLavador) {
+                    $llegadaLavador->estado = 'ocupado';
+                    $llegadaLavador->save();
+                }
+            }
+
+            DB::commit();
+            return response()->json(['success' => true]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['success' => false, 'error' => $e->getMessage()]);
+        }
     }
 
 
@@ -197,6 +286,38 @@ class VentaController extends Controller
             ]);
         } else {
             return response()->json(['success' => false]);
+        }
+    }
+
+    public function finalizarVenta(Request $request)
+    {
+        DB::beginTransaction();
+        try {
+            $venta = Venta::find($request->id_venta);
+            if ($venta) {
+                $venta->medio_pago = $request->medio_pago;
+                $venta->estado = 'finalizado';
+                $venta->save();
+
+                // Cambiar el estado del trabajador a 'activo' en LlegadaLavador
+                $llegadaLavador = \App\Model\LlegadaLavador::where('id_empleado', $venta->id_usuario)
+                    ->whereDate('hora_llegada', date('Y-m-d'))
+                    ->where('estado', 'ocupado')
+                    ->first();
+
+                if ($llegadaLavador) {
+                    $llegadaLavador->estado = 'activo';
+                    $llegadaLavador->save();
+                }
+
+                DB::commit();
+                return response()->json(['success' => true]);
+            }
+            DB::rollBack();
+            return response()->json(['success' => false]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['success' => false, 'error' => $e->getMessage()]);
         }
     }
 }
