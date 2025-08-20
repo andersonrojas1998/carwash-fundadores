@@ -258,5 +258,5 @@
 @push('style') 
 @endpush
 @push('custom-scripts')     
-    <script src="{{ asset('/lib/teacher.js') }}"></script>
+    <script src="{{ asset('/lib/teacher.js?v=1.0.0') }}"></script>
 @endpush

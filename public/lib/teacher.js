@@ -12,8 +12,6 @@ $(document).ready(function() {
     $(document).on("click",".btn_search_income_store",function(){ 
         var dateini=$("#date_ini").val();
         var dateend=$("#date_end").val();
-        console.log(dateini,dateend);
-
         $.ajax({
             url:'/income_store/'+dateini+'/'+dateend,
             type:"GET",            
