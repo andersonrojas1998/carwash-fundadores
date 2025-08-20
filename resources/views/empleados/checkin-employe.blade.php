@@ -44,6 +44,7 @@
   <div class="modal-dialog" role="document">
     <form id="form_checkin" method="POST" >
          {{ csrf_field() }}
+         <meta name="csrf-token" content="{{ csrf_token() }}">
       <div class="modal-content">
         <div class="modal-header bg-info">
           <h5 class="modal-title">Registrar llegada de trabajador</h5>
