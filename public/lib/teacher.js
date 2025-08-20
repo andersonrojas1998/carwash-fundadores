@@ -189,7 +189,7 @@ $(document).ready(function() {
         e.preventDefault();
         var form = $(this);
         $.ajax({
-            url: '/checkin-employe-save',
+            url: '/checkin-employe/save',
             type: 'POST',
             data: form.serialize(),
             headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },

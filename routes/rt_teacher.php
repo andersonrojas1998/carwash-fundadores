@@ -19,5 +19,5 @@ Route::get('/assignmentCourseTeacher', 'DocenteController@assignmentCourseTeache
 
 
 Route::get('/checkin-employe', 'LlegadaLavadorController@index')->name('checkin.index');
-Route::post('/checkin-employe-save', 'LlegadaLavadorController@store')->name('checkin.store');
+Route::post('/checkin-employe/save', 'LlegadaLavadorController@store')->name('checkin.store');
 Route::post('/checkin-employe/estado', 'LlegadaLavadorController@cambiarEstado')->name('checkin.estado');
