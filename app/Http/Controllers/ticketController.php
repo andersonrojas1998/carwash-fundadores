@@ -1,10 +1,10 @@
 <?php
 namespace App\Http\Controllers;
-use App\Model\Venta;
+use App\Models\Venta;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-class ticketController extends Controller
+class TicketController extends Controller
 {
     public function ticketPrint($id)
     {

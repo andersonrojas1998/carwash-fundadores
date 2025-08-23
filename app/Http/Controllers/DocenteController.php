@@ -38,23 +38,51 @@ class DocenteController extends Controller
         return json_encode($data);          
     }
 
-    public function dt_sales_user(){
-        $dataUs=DB::SELECT("CALL sp_salesxuser()");        
-        $data=[];
-        foreach($dataUs as $key => $us)
-        {                            
-            $data['data'][$key]['con']=$key;   
-            $data['data'][$key]['id']=$us->id_user;
-            $data['data'][$key]['dni']=$us->identificacion;
-            $data['data'][$key]['name']=$us->name; 
-            $data['data'][$key]['cant_servicios']=$us->cant_servicios;
-            $data['data'][$key]['pagos']=($us->cant_servicios-$us->pendiente); 
-            $data['data'][$key]['pendiente']=$us->pendiente; 
-            $data['data'][$key]['pend_pago']= (is_null($us->pend_pago))? 0:$us->pend_pago;
-           
-                       
+    public function dt_sales_user()
+    {
+        $users = \DB::table('users')->select('id', 'identificacion', 'name')->get();
+        $data = [];
+
+        foreach ($users as $key => $user) {
+            // Total de servicios
+            $cant_servicios = \DB::table('venta')
+                ->where('id_usuario', $user->id)
+                ->whereNotNull('id_detalle_paquete')
+                ->count();
+
+            // Servicios pendientes
+            $pendiente = \DB::table('venta')
+                ->where('id_usuario', $user->id)
+                ->where('id_estado_venta', 1)
+                ->whereNotNull('id_detalle_paquete')
+                ->count();
+
+            // Pago pendiente
+            $pend_pago = \DB::table('venta')
+                ->where('id_usuario', $user->id)
+                ->where('id_estado_venta', 1)
+                ->selectRaw('ROUND(SUM(precio_venta_paquete * porcentaje_paquete / 100)) as pend_pago')
+                ->value('pend_pago');
+
+            // Total préstamos no pagados
+            $total_prestamos = \DB::table('loans')
+                ->where('id_usuario', $user->id)
+                ->whereNull('fecha_pago')
+                ->sum('valor');
+
+            $data['data'][$key]['con'] = $key;
+            $data['data'][$key]['id'] = $user->id;
+            $data['data'][$key]['dni'] = $user->identificacion;
+            $data['data'][$key]['name'] = $user->name;
+            $data['data'][$key]['cant_servicios'] = $cant_servicios;
+            $data['data'][$key]['pagos'] = $cant_servicios - $pendiente;
+            $data['data'][$key]['pendiente'] = $pendiente;
+            $data['data'][$key]['pend_pago'] = is_null($pend_pago) ? 0 : $pend_pago;
+            $data['data'][$key]['prestamos'] = $total_prestamos;
+            $data['data'][$key]['balance'] = \DB::table('employee_balances')->where('user_id', $user->id)->value('saldo');
         }
-        return json_encode($data);          
+
+        return response()->json($data);
     }
 
     public function dt_pay_pending($idUser, $status)
@@ -107,23 +135,81 @@ class DocenteController extends Controller
             $psale += $precio_venta;
         }
 
+        // Total préstamos pendientes
+        $total_prestamos = \DB::table('loans')
+            ->where('id_usuario', $idUser)
+            ->whereNull('fecha_pago')
+            ->sum('valor');
+
+        // Balance general
+        $balance = \DB::table('employee_balances')->where('user_id', $idUser)->value('saldo');
+
         $data['pay_sales'] = $psale;
         $data['pay'] = $total;
+        $data['prestamos'] = $total_prestamos;
+        $data['payWithDiscount'] = $total - $total_prestamos;
+        $data['balance'] = $balance;
 
         return response()->json($data);
     }
 
-    public function pay_sales(){        
-        DB::table('venta')
-                ->where('id_usuario', intval(Request::input('id_usuario')))
-                ->where('id_estado_venta', 1)
-                ->whereNotNull('id_detalle_paquete')
-                ->update([
-                    'id_estado_venta' =>2,
-                    'fecha_pago' =>date('Y-m-d h:i:s')                    
-                    ]
-            );
-            return 1;
+    public function pay_sales()
+    {
+        $userId = intval(Request::input('id_usuario'));
+
+        // 1. Total a pagar por ventas pendientes
+        $ventas = \DB::table('venta')
+            ->where('id_usuario', $userId)
+            ->where('id_estado_venta', 1)
+            ->whereNotNull('id_detalle_paquete')
+            ->get();
+
+        $totalPago = 0;
+        foreach ($ventas as $venta) {
+            $totalPago += round($venta->precio_venta_paquete * $venta->porcentaje_paquete / 100);
+        }
+
+        // 2. Total préstamos pendientes (ordenados por fecha)
+        $prestamos = \DB::table('loans')
+            ->where('id_usuario', $userId)
+            ->whereNull('fecha_pago')
+            ->orderBy('fecha_prestamo')
+            ->get();
+
+        $restante = $totalPago;
+
+        // 3. Marcar préstamos como pagados solo si alcanza el saldo
+        foreach ($prestamos as $prestamo) {
+            if ($restante >= $prestamo->valor) {
+                \DB::table('loans')->where('id', $prestamo->id)->update(['fecha_pago' => now()]);
+                $restante -= $prestamo->valor;
+            } else {
+                // No alcanza para este préstamo, se deja pendiente
+                break;
+            }
+        }
+
+        // 4. Marcar ventas como pagadas
+        \DB::table('venta')
+            ->where('id_usuario', $userId)
+            ->where('id_estado_venta', 1)
+            ->whereNotNull('id_detalle_paquete')
+            ->update([
+                'id_estado_venta' => 2,
+                'fecha_pago' => now()
+            ]);
+
+        // 5. Calcular saldo final (puede ser negativo)
+        $totalPrestamos = $prestamos->sum('valor');
+        $saldoFinal = $totalPago - $totalPrestamos;
+
+        // 6. Actualizar o crear saldo en employee_balances
+        \DB::table('employee_balances')->updateOrInsert(
+            ['user_id' => $userId],
+            ['saldo' => $saldoFinal, 'updated_at' => now()]
+        );
+
+        return response()->json(['saldo' => $saldoFinal]);
     }
     
 
@@ -171,5 +257,17 @@ class DocenteController extends Controller
     }
     public function showUser($id){
         return json_encode(User::find($id));
+    }
+
+    // Nueva función para retornar préstamos no pagados de un empleado
+    public function loans_by_user($id)
+    {
+        $loans = \DB::table('loans')
+            ->where('id_usuario', $id)
+            ->whereNull('fecha_pago')
+            ->select('valor', 'concepto', 'fecha_prestamo')
+            ->get();
+
+        return response()->json($loans);
     }
 }

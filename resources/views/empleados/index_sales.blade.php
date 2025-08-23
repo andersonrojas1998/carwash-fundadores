@@ -16,16 +16,17 @@
             <div class="card-body">
             <h4 class="card-title">Cantidad de servicios prestados por Empleados</h4>
              <div class="table-responsive">
-                <table id="dt_sales_user" class="table table-striped">
+                <table id="dt_sales_user" class="table table-hober">
                 <thead>
-                    <tr>
-                        <th> # </th> 
-                        <th> Identificacion</th> 
-                        <th> Nombre </th>
-                        <th>Cant. Servicios prestados</th>
-                        <th>Cant. Pagos</th>
-                        <th>Cant. Pend</th>
-                        <th>Pend. Pagar </th></tr>                
+                    <tr>                     
+                          <th>Empleado</th>                         
+                          <th class="text-center">Servicios<br>Prestados</th>
+                          <th class="text-center">Pagos<br>Realizados</th>
+                          <th class="text-center bg-warning text-white">Pendientes<br>por Pagar</th>
+                          <th class="text-center bg-danger text-white">Monto<br>Pendiente</th>
+                          <th class="text-center">Préstamos</th>
+                          <th class="text-center">Balance</th>
+                      </tr>                
                 </thead>                 
             </table>
             </div>
@@ -156,7 +157,7 @@
         </div>
     <br>
     <hr>
-    <div class="row">
+<!--  <div class="row">
 
     <div class="col-lg-3">
     <div class="card" style="border-bottom:outset;border-radius:15px;">
@@ -166,20 +167,121 @@
               </div>
             </div>
     </div>    
-    <div class="col-lg-6">
-    <div class="card" style="border-bottom:outset;border-radius:15px;">
-                <div class="card-body">
-                  <h4 class="card-title"><p class="text-muted text-success">Se debe realizar el pago del siguiente valor : </p> <p class="text-success">Aplica pago al trabajador (*)</p></h4>
-                  <label class="text-primary">Total Pago :  <h2 class="payPending text-success"> </h2>  </label>
-              </div>
+    <div class="col-lg-3">
+        <div class="card" style="border-bottom:outset;border-radius:15px;">
+            <div class="card-body">
+                <h4 class="card-title">
+                    <p class="text-muted text-success">Total a pagar con descuentos:</p>
+                    <p class="text-success">Se descuenta préstamos pendientes</p>
+                </h4>
+                <label class="text-primary">Total Neto :
+                    <h2 class="payWithDiscount text-success"></h2>
+                </label>
             </div>
+        </div>
     </div>
-
-
-
-        
-     </div>  
+    <div class="col-lg-3">
+        <div class="card" style="border-bottom:outset;border-radius:15px;">
+            <div class="card-body">
+                <h4 class="card-title">
+                    <p class="text-muted text-info">Balance General:</p>
+                </h4>
+                <label class="text-primary">Saldo :
+                    <h2 class="employeeBalance text-info"></h2>
+                </label>
+            </div>
+        </div>
     </div>
+    <div class="col-lg-3">
+        <div class="card" style="border-bottom:outset;border-radius:15px;">
+            <div class="card-body">
+                <h4 class="card-title">
+                    <p class="text-muted text-success">Se debe realizar el pago del siguiente valor :</p>
+                    <p class="text-success">Aplica pago al trabajador (*)</p>
+                </h4>
+                <label class="text-primary">Total Pago :
+                    <h2 class="payPending text-success"></h2>
+                </label>
+            </div>
+        </div>
+    </div>
+</div>-->
+
+
+<div class="col-lg-12">
+    <table class="table table-bordered table-hover shadow-sm" style="background: #fff; border-radius: 12px;">
+        <thead class="thead-light">
+            <tr>
+                <th colspan="2" class="text-center" style="font-size: 1.2em;">
+                    <i class="mdi mdi-cash-multiple"></i> Resumen del Pago al Empleado
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    <span class="font-weight-bold text-primary">Ingreso por Ventas</span>
+                    <br>
+                    <small class="text-muted">Total generado por servicios prestados</small>
+                </td>
+                <td>
+                    <span class="h4 payPSales text-success font-weight-bold"></span>
+                </td>
+            </tr>
+
+             <tr>
+                <td>
+                    <span class="font-weight-bold text-info">Servicios prestados </span>
+                    <br>
+                    <small class="text-muted">Total de servicios prestados por empleado</small>
+                </td>
+                <td>
+                    <span class="h4 payPending  text-info font-weight-bold"></span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span class="font-weight-bold text-warning">Descuento por Préstamos</span>
+                    <br>
+                    <small class="text-muted">Total de préstamos pendientes descontados</small>
+                </td>
+                <td>
+                    <span class="h4 loansAll  text-warning font-weight-bold"></span>
+                </td>
+            </tr>
+            <!--<tr>
+                <td>
+                    <span class="font-weight-bold text-info">Total a Pagar (Neto)</span>
+                    <br>
+                    <small class="text-muted">Ingreso menos préstamos</small>
+                </td>
+                <td>
+                    <span class="h4  text-info font-weight-bold"></span>
+                </td>
+            </tr>-->
+            <tr>
+                <td>
+                    <span class="font-weight-bold text-secondary">Balance General</span>
+                    <br>
+                    <small class="text-muted">Saldo final del empleado después del pago</small>
+                </td>
+                <td>
+                    <span class="h4 employeeBalance text-secondary font-weight-bold"></span>
+                </td>
+            </tr>
+            <tr class="table-success">
+                <td>
+                    <span class="font-weight-bold text-success">Pago a Realizar</span>
+                    <br>
+                    <small class="text-muted">Valor final a entregar al trabajador</small>
+                </td>
+                <td>
+                    <span class="h4 payWithDiscount text-success font-weight-bold"></span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
       <div class="modal-footer">
         <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
         <button type="submit" id="btn_pay_sales" class="btn btn-success">Pagar    <i class="mdi  mdi-cash-usd text-white"></i></button>
@@ -222,7 +324,7 @@
         </div>
     <br>
     <hr>
-    <div class="row">
+  <div class="row">
         
     <div class="col-lg-3">
     <div class="card" style="border-bottom:outset;border-radius:15px;">
@@ -252,6 +354,24 @@
     </div>
   </div>
 </div>  
+
+<!-- Modal para detalle de préstamos -->
+<div class="modal fade" id="mdl_loans_detail" tabindex="-1" role="dialog" aria-labelledby="mdlLoansDetailLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title">Préstamos Pendientes del Empleado</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <!-- Aquí se cargará el detalle por AJAX -->
+      </div>
+    </div>
+  </div>
+</div>
+
 
     
 @endsection

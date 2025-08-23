@@ -1,5 +1,6 @@
 $(document).ready(function() {
 
+  $('.DataTable').DataTable();
   $(document).on('click', '#btn_change_password', function() {
     window.location.href = '/change-password';
   });

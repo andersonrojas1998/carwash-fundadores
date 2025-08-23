@@ -31,7 +31,7 @@ Auth::routes();
 
 Route::group(['middleware' => ['auth']], function () {    
     Route::get('/home', 'HomeController@index')->name('home');                    
-    require (__DIR__ . '/rt_teacher.php');
+    require (__DIR__ . '/rt_users.php');
     require (__DIR__ . '/rt_reports.php');
     require (__DIR__ . '/rt_product.php');
     require (__DIR__ . '/rt_buy.php');
@@ -39,6 +39,7 @@ Route::group(['middleware' => ['auth']], function () {
     require (__DIR__ . '/rt_sell.php');
     require (__DIR__ . '/rt_pay.php');
     require (__DIR__ . '/rt_client.php');
+    require (__DIR__ . '/rt_loans.php');     
 
 
     Route::get('/change-password', function() {

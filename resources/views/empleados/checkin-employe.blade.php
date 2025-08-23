@@ -1,13 +1,17 @@
 @extends('layout.master')
 @section('content')
+@php
+    setlocale(LC_TIME, 'es_ES.UTF-8', 'Spanish_Spain.1252');
+    $fecha = \Carbon\Carbon::now('America/Bogota')->formatLocalized('%A, %d de %B de %Y');
+@endphp
 <div class="card">
     <div class="card-header bg-light">
-        <h4>Trabajadores presentes hoy</h4>
-        <button class="btn btn-success float-right" data-toggle="modal" data-target="#mdl_checkin">Registrar llegada</button>
+        <h4 class="pt-2">DISPONIBILIDAD SOCIOS -  {{ ucfirst($fecha) }}</h4>
+        <button class="btn btn-success float-right" data-toggle="modal" data-target="#mdl_checkin">Registrar llegada  &nbsp; <i class="mdi mdi-clock-fast"></i></button>
     </div>
     <div class="card-body">
         <div class="table-responsive">
-            <table id="dt_checkin" class="table table-bordered table-hover">
+            <table id="dt_checkin" class="table table-bordered table-hover DataTable">
                 <thead>
                     <tr>
                         <th>#</th>
@@ -47,7 +51,7 @@
          <meta name="csrf-token" content="{{ csrf_token() }}">
       <div class="modal-content">
         <div class="modal-header bg-info">
-          <h5 class="modal-title">Registrar llegada de trabajador</h5>
+          <h5 class="modal-title text-white">Registrar llegada de trabajador   &nbsp; <i class="mdi mdi-clock-fast"></i></h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
             <span aria-hidden="true">&times;</span>
           </button>
@@ -55,7 +59,7 @@
         <div class="modal-body">
             <div class="form-group">
                 <label for="id_empleado">Trabajador</label>
-                <select id="id_empleado" name="id_empleado" class="form-control select2" required>
+                <select id="id_empleado" name="id_empleado" class="form-control select2" required style="width:100%">
                     @foreach($empleados as $empleado)
                         <option value="{{ $empleado->id }}">{{ $empleado->name }}</option>
                     @endforeach
