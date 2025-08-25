@@ -519,4 +519,27 @@ $('#form_finalizar_venta').on('submit', function(e) {
     });
 });
 
+function actualizarTotalConDescuento() {
+    let total = parseFloat($("#importe_total").val()) || 0;
+    let descuento = parseFloat($("#input_discount").val()) || 0;
+    let totalFinal = total - descuento;
+    if (totalFinal < 0) totalFinal = 0;
+
+    $("#text_importe_total").text(total.toLocaleString('es-CO'));
+    if (descuento > 0) {
+        $("#descuento_aplicado").html(`<i class="mdi mdi-tag"></i> Descuento aplicado: -$${descuento.toLocaleString('es-CO')}`);
+        $("#total_final").html(`<i class="mdi mdi-cash"></i> Total a pagar: $${totalFinal.toLocaleString('es-CO')}`);
+    } else {
+        $("#descuento_aplicado").html('');
+        $("#total_final").html('');
+    }
+}
+
+// Aplica el descuento cada vez que cambia el campo o el total
+$(document).on('input', '#input_discount', actualizarTotalConDescuento);
+$(document).on('DOMSubtreeModified', '#text_importe_total', actualizarTotalConDescuento);
+
+// También al cargar un paquete/producto
+$(document).on('click change', '.button_package, #select-product, #input-quantity-product', actualizarTotalConDescuento);
+
 

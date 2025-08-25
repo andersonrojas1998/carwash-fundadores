@@ -11,7 +11,8 @@ class LlegadaLavador extends Model
     protected $fillable = [
         'id_empleado', // id del trabajador
         'hora_llegada',
-        'estado', // activo/ocupado
+        'estado', 
+        'orden'
     ];
 
     public function empleado()

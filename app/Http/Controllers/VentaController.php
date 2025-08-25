@@ -21,34 +21,37 @@ class VentaController extends Controller
     public function index()
     {
         $ventas = Venta::orderBy('id', 'desc')->take(500)->get();
-        // Lógica para trabajadores disponibles y orden de llegada
         $hoy = date('Y-m-d');
+
+        // Ordenar por 'orden' para manejar la cola
         $llegadas = \App\Model\LlegadaLavador::whereDate('hora_llegada', $hoy)
             ->with('empleado')
-            ->orderBy('hora_llegada', 'asc')
+            //->where('estado', 'activo')
+            ->orderBy('orden', 'asc')
             ->get();
 
         // Verificar si todos están inactivos
         $todosInactivos = $llegadas->count() > 0 && $llegadas->where('estado', 'activo')->count() == 0;
 
-        // Si todos están inactivos, agregar el usuario "Sin Prestador" (ID 17)
         if ($todosInactivos) {
             $sinPrestador = \App\Model\users::where('name', 'Sin Prestador')->first();
             if ($sinPrestador) {
                 $llegadaFake = new \stdClass();
                 $llegadaFake->empleado = $sinPrestador;
-                $llegadaFake->estado = 'ocupado';
+                $llegadaFake->estado = 'activo';
+                $llegadaFake->orden = 0;
                 $llegadas->push($llegadaFake);
                 $lavadorTurno = $llegadaFake;
             } else {
                 $lavadorTurno = null;
             }
         } else {
-            // El turno es el primero activo
+            // El turno es el primero activo en la cola
             $lavadorTurno = $llegadas->where('estado', 'activo')->first();
+
         }
 
-        return view('venta.index', compact('ventas', 'llegadas'));
+        return view('venta.index', compact('ventas', 'llegadas', 'lavadorTurno'));
     }
 
     public function create()
@@ -58,11 +61,12 @@ class VentaController extends Controller
         $date->setTimezone('America/Bogota');
         $productos = DB::SELECT("CALL sp_products('1,2')");
 
-        // Empleados que llegaron hoy
+        // Empleados que llegaron hoy, ordenados por 'orden'
         $hoy = date('Y-m-d');
         $llegadas = \App\Model\LlegadaLavador::whereDate('hora_llegada', $hoy)
             ->with('empleado')
-            ->orderBy('hora_llegada', 'asc')
+            //->where('estado', 'activo')
+            ->orderBy('orden', 'asc')
             ->get();
 
         // Verificar si todos están inactivos
@@ -72,18 +76,19 @@ class VentaController extends Controller
         if ($todosInactivos) {
             $sinPrestador = \App\Model\users::where('name', 'Sin Prestador')->first();
             if ($sinPrestador) {
-                // Creamos un objeto simulado de llegada para mostrar en el select
                 $llegadaFake = new \stdClass();
                 $llegadaFake->empleado = $sinPrestador;
-                $llegadaFake->estado = 'ocupado';
+                $llegadaFake->estado = 'activo';
+                $llegadaFake->orden = 0;
                 $llegadas->push($llegadaFake);
                 $lavadorTurno = $llegadaFake;
             } else {
                 $lavadorTurno = null;
             }
         } else {
-            // El turno es el primero activo
+            // El turno es el primero activo            
             $lavadorTurno = $llegadas->where('estado', 'activo')->first();
+
         }
 
         return view('venta.create', compact('tipos_vehiculo', 'date', 'productos', 'llegadas', 'lavadorTurno'));
@@ -137,11 +142,15 @@ class VentaController extends Controller
             $usuario = \App\Model\users::find($data['id_usuario']);
             $estado_venta = ($usuario && $usuario->name == 'Sin Prestador') ? 'pendiente' : 'en_proceso';
 
+            $descuento = isset($data['descuento']) ? floatval($data['descuento']) : 0;
+            $total = floatval($data['importe_total']);
+            $totalConDescuento = max(0, $total - $descuento); // Nunca menor a 0
+
             $venta = new Venta($data);
             $venta->fecha = now()->setTimezone('America/Bogota');
             $venta->id_estado_venta = $status;
-            $venta->estado = $estado_venta; // Guardar el estado de la venta
-            $venta->total_venta = floatval($data['importe_total']);
+            $venta->estado = $estado_venta;
+            $venta->total_venta = $totalConDescuento; // <-- Aquí se guarda el total con descuento aplicado
             $venta->precio_venta_paquete = isset($data['precio_venta_paquete']) ? floatval($data['precio_venta_paquete']) : 0;
             $venta->porcentaje_paquete = isset($data['porcentaje_paquete']) ? intval($data['porcentaje_paquete']) : 0;
             $venta->id_cliente = $cliente->id;
@@ -299,7 +308,7 @@ class VentaController extends Controller
                 $venta->estado = 'finalizado';
                 $venta->save();
 
-                // Cambiar el estado del trabajador a 'activo' en LlegadaLavador
+                // Cambiar el estado del trabajador a 'activo' y actualizar su orden
                 $llegadaLavador = \App\Model\LlegadaLavador::where('id_empleado', $venta->id_usuario)
                     ->whereDate('hora_llegada', date('Y-m-d'))
                     ->where('estado', 'ocupado')
@@ -307,6 +316,11 @@ class VentaController extends Controller
 
                 if ($llegadaLavador) {
                     $llegadaLavador->estado = 'activo';
+
+                    // Obtener el orden más alto actual
+                    $maxOrden = \App\Model\LlegadaLavador::whereDate('hora_llegada', date('Y-m-d'))->max('orden');
+                    $llegadaLavador->orden = $maxOrden + 1; // Lo manda al final de la cola
+
                     $llegadaLavador->save();
                 }
 

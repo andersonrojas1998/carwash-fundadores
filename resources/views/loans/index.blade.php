@@ -29,12 +29,16 @@
                         <td>{{ $loan->fecha_prestamo }}</td>
                         <td>{{ $loan->fecha_pago }}</td>                                          
 <td>
-    <button type="button" class="btn btn-warning btn-edit-loan" data-id="{{ $loan->id }}">
-        <i class="mdi mdi-pencil"></i> Editar
-    </button>
-    <button type="button" class="btn btn-danger btn-delete-loan" data-id="{{ $loan->id }}">
-        <i class="mdi mdi-delete"></i> Eliminar
-    </button>
+    @if(is_null($loan->fecha_pago))
+        <button type="button" class="btn btn-warning btn-edit-loan" data-id="{{ $loan->id }}">
+            <i class="mdi mdi-pencil"></i> Editar
+        </button>
+        <button type="button" class="btn btn-danger btn-delete-loan" data-id="{{ $loan->id }}">
+            <i class="mdi mdi-delete"></i> Eliminar
+        </button>
+    @else
+        <span class="badge badge-info">Pagado</span>
+    @endif
 </td>
                     </tr>
                 @endforeach

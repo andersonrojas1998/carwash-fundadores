@@ -58,7 +58,7 @@
                         <h4 class="mb-3"><strong>Atendido por&nbsp;:</strong></h4>
                         <label>{{$venta->user->name}}</label>
                         <h4 class="mt-3"><strong>Estado&nbsp;:</strong></h4>
-                        <label>{{$venta->estado_venta->nombre}}</label>
+                        <label>{{$venta->medio_pago}}</label>
                     </div>
                 </div>
 
@@ -77,13 +77,13 @@
                                 @php $total = 0; @endphp
                                 @if($venta->detalle_paquete)
                                     @php
-                                    $total += $venta->detalle_paquete->precio_venta;
+                                    $total += $venta->total_venta;
                                     @endphp
                                     <tr>
                                         <td>{{$venta->detalle_paquete->paquete->nombre.' - '.$venta->detalle_paquete->tipo_vehiculo->descripcion}}</td>
                                         <td>{{$venta->detalle_paquete->precio_venta}}</td>
                                         <td>1</td>
-                                        <td>{{$venta->detalle_paquete->precio_venta}}</td>
+                                        <td>{{$venta->total_venta}}</td>
                                     </tr>
                                 @endif
                                 @foreach($productos as $detalle_venta_producto)      

@@ -12,6 +12,7 @@ class LlegadaLavadorController extends Controller
         $hoy = date('Y-m-d');
         $llegadas = LlegadaLavador::whereDate('hora_llegada', $hoy)
             ->with('empleado')
+            ->orderBy('orden', 'asc')
             ->get();
 
         // Obtener los IDs de empleados que ya llegaron hoy
@@ -30,10 +31,16 @@ class LlegadaLavadorController extends Controller
             'hora_llegada' => 'required'
         ]);
 
+        // Obtener el máximo orden actual para hoy
+        $hoy = date('Y-m-d');
+        $maxOrden = LlegadaLavador::whereDate('hora_llegada', $hoy)->max('orden');
+        $nuevoOrden = is_null($maxOrden) ? 1 : $maxOrden + 1;
+
         LlegadaLavador::create([
             'id_empleado' => $request->id_empleado,
-            'hora_llegada' => date('Y-m-d') . ' ' . $request->hora_llegada,
-            'estado' => 'activo'
+            'hora_llegada' => $hoy . ' ' . $request->hora_llegada,
+            'estado' => 'activo',
+            'orden' => $nuevoOrden
         ]);
 
         return response()->json(['success' => true]);
@@ -44,6 +51,14 @@ class LlegadaLavadorController extends Controller
         $llegada = LlegadaLavador::find($request->id);
         if ($llegada) {
             $llegada->estado = $request->estado;
+
+            // Si se reactiva, lo manda al final de la cola
+            if ($request->estado === 'activo') {
+                $hoy = date('Y-m-d');
+                $maxOrden = LlegadaLavador::whereDate('hora_llegada', $hoy)->max('orden');
+                $llegada->orden = is_null($maxOrden) ? 1 : $maxOrden + 1;
+            }
+
             $llegada->save();
             return response()->json(['success' => true]);
         }

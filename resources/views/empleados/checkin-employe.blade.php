@@ -18,6 +18,7 @@
                         <th>Nombre</th>
                         <th>Hora de llegada</th>
                         <th>Estado</th>
+                        <th>Orden</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
@@ -30,6 +31,7 @@
                         <td>
                             <span class="badge badge-{{ $llegada->estado == 'activo' ? 'success' : 'danger' }}">{{ $llegada->estado }}</span>                            
                         </td>
+                        <td>{{ $llegada->orden}}</td>
                         <td>
                             <button class="btn btn-xs btn-primary  btn_toggle_estado" data-id="{{ $llegada->id }}" data-estado="{{ $llegada->estado == 'activo' ? 'ocupado' : 'activo' }}">
                                 Cambiar a {{ $llegada->estado == 'activo' ? 'Ocupado' : 'Activo' }}
