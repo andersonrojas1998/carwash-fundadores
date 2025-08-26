@@ -39,6 +39,7 @@ $(document).ready(function() {
 
     // Editar préstamo
     $('.btn-edit-loan').on('click', function() {
+    
         let id = $(this).data('id');
         $.get('/loans/' + id + '/edit', function(data) {
             $('#mdl_loans').modal('show');

@@ -61,11 +61,21 @@ class DocenteController extends Controller
             $pend_pago = \DB::table('venta')
                 ->where('id_usuario', $user->id)
                 ->where('id_estado_venta', 1)
-                ->selectRaw('ROUND(SUM(precio_venta_paquete * porcentaje_paquete / 100)) as pend_pago')
+                ->selectRaw('ROUND(SUM(total_venta * porcentaje_paquete / 100)) as pend_pago')
                 ->value('pend_pago');
 
             // Total préstamos no pagados
             $total_prestamos = \DB::table('loans')
+                ->where('id_usuario', $user->id)
+                ->whereNull('fecha_pago')
+                ->sum('valor');
+
+            // Obtener balance negativo actual
+            $balance = \DB::table('employee_balances')->where('user_id', $user->id)->value('saldo');
+            $balance = $balance ?? 0;
+
+            // Préstamos nuevos (no pagados)
+            $prestamos_nuevos = \DB::table('loans')
                 ->where('id_usuario', $user->id)
                 ->whereNull('fecha_pago')
                 ->sum('valor');
@@ -78,8 +88,8 @@ class DocenteController extends Controller
             $data['data'][$key]['pagos'] = $cant_servicios - $pendiente;
             $data['data'][$key]['pendiente'] = $pendiente;
             $data['data'][$key]['pend_pago'] = is_null($pend_pago) ? 0 : $pend_pago;
-            $data['data'][$key]['prestamos'] = $total_prestamos;
-            $data['data'][$key]['balance'] = \DB::table('employee_balances')->where('user_id', $user->id)->value('saldo');
+            $data['data'][$key]['prestamos'] = $prestamos_nuevos;
+            $data['data'][$key]['balance'] = $balance;
         }
 
         return response()->json($data);
@@ -99,7 +109,7 @@ class DocenteController extends Controller
             'id as no_venta',
             'id_cliente',
             'id_detalle_paquete',
-            'precio_venta_paquete',
+            'total_venta',
             'porcentaje_paquete',
             'fecha_pago',
             'fecha'
@@ -115,7 +125,7 @@ class DocenteController extends Controller
             $paquete = $detallePaquete ? $detallePaquete->paquete : null;
             $tipoVehiculo = $detallePaquete ? $detallePaquete->tipo_vehiculo : null;
 
-            $precio_venta = $venta->precio_venta_paquete;
+            $precio_venta = $venta->total_venta;
             $porcentaje = $venta->porcentaje_paquete;
             $pago = round($precio_venta * $porcentaje / 100);
 
@@ -147,7 +157,7 @@ class DocenteController extends Controller
         $data['pay_sales'] = $psale;
         $data['pay'] = $total;
         $data['prestamos'] = $total_prestamos;
-        $data['payWithDiscount'] = $total - $total_prestamos;
+        $data['payWithDiscount'] = $total - ($total_prestamos + ($balance < 0 ? abs($balance) : 0));
         $data['balance'] = $balance;
 
         return response()->json($data);
@@ -166,30 +176,56 @@ class DocenteController extends Controller
 
         $totalPago = 0;
         foreach ($ventas as $venta) {
-            $totalPago += round($venta->precio_venta_paquete * $venta->porcentaje_paquete / 100);
+            $totalPago += round($venta->total_venta * $venta->porcentaje_paquete / 100);
         }
 
-        // 2. Total préstamos pendientes (ordenados por fecha)
+        // Validar que existan servicios pendientes y saldo a pagar
+        if ($ventas->count() == 0 || $totalPago <= 0) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No hay servicios pendientes por pagar o el saldo es cero.'
+            ], 400);
+        }
+
+        // Balance anterior (puede ser negativo)
+        $balance = \DB::table('employee_balances')->where('user_id', $userId)->value('saldo');
+        $balance = $balance ?? 0;
+
+        // Préstamos nuevos (no pagados)
         $prestamos = \DB::table('loans')
             ->where('id_usuario', $userId)
             ->whereNull('fecha_pago')
             ->orderBy('fecha_prestamo')
             ->get();
 
-        $restante = $totalPago;
+        $totalPrestamos = $prestamos->sum('valor');       
+        $saldoFinal = $totalPago + $balance - $totalPrestamos;
 
-        // 3. Marcar préstamos como pagados solo si alcanza el saldo
-        foreach ($prestamos as $prestamo) {
-            if ($restante >= $prestamo->valor) {
+        // Si el saldo final es negativo, todos los préstamos quedan pagados y el saldo negativo se actualiza
+        if ($saldoFinal < 0) {
+            foreach ($prestamos as $prestamo) {
                 \DB::table('loans')->where('id', $prestamo->id)->update(['fecha_pago' => now()]);
-                $restante -= $prestamo->valor;
-            } else {
-                // No alcanza para este préstamo, se deja pendiente
-                break;
             }
+            \DB::table('employee_balances')->updateOrInsert(
+                ['user_id' => $userId],
+                ['saldo' => $saldoFinal, 'updated_at' => now()]
+            );
+        } else {
+            // Paga préstamos hasta donde alcance, el resto queda pendiente
+            $restante = $totalPago + $balance;
+            foreach ($prestamos as $prestamo) {
+                if ($restante >= $prestamo->valor) {
+                    \DB::table('loans')->where('id', $prestamo->id)->update(['fecha_pago' => now()]);
+                    $restante -= $prestamo->valor;
+                } else {
+                    break;
+                }
+            }
+            // Si ya no hay deuda, elimina el balance
+            \DB::table('employee_balances')->where('user_id', $userId)->delete();
         }
 
-        // 4. Marcar ventas como pagadas
+        // 6. Marcar ventas como pagadas
         \DB::table('venta')
             ->where('id_usuario', $userId)
             ->where('id_estado_venta', 1)
@@ -199,17 +235,10 @@ class DocenteController extends Controller
                 'fecha_pago' => now()
             ]);
 
-        // 5. Calcular saldo final (puede ser negativo)
-        $totalPrestamos = $prestamos->sum('valor');
-        $saldoFinal = $totalPago - $totalPrestamos;
-
-        // 6. Actualizar o crear saldo en employee_balances
-        \DB::table('employee_balances')->updateOrInsert(
-            ['user_id' => $userId],
-            ['saldo' => $saldoFinal, 'updated_at' => now()]
-        );
-
-        return response()->json(['saldo' => $saldoFinal]);
+        return response()->json([
+            'success' => true,
+            'saldo' => $saldoFinal
+        ]);
     }
     
 

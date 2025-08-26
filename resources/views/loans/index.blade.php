@@ -96,5 +96,5 @@
 </div>
 @endsection
 @push('custom-scripts')
-    {!! Html::script('lib/loans.js') !!}
+    {!! Html::script('lib/loans.js?v.1.0') !!}
 @endpush

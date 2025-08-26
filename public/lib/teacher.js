@@ -133,42 +133,43 @@ $(document).ready(function() {
 
 
     $(document).on("click","#btn_pay_sales",function(e){                                
-
-        let us=$('#id_usuario').val();
-        let totalt=$('.payWithDiscount').html();
-        Swal.fire({
-            title: '¿ Esta Seguro ?',
-            html: 'Deseas realizar el pago de los servicios prestados por valor  '+ totalt,
-            icon: 'question',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Si'
-          }).then((result) => {
-            if (result.value) {
-
-                
-                $.ajax({
-                    url:"/usuarios/pay_sales/",
-                    data:{'id_usuario':us,'total':totalt},
-                    type:"GET",
-                    dataType:"JSON",
-                    success:function(data){
-                            
-                            sweetMessage('\u00A1Registro exitoso!', '\u00A1 Se ha realizado con \u00E9xito su solicitud!');
-                            setTimeout(function () { location.reload() }, 2000);
-
-                            
-
+    let us = $('#id_usuario').val();
+    let totalt = $('.payWithDiscount').html();
+    Swal.fire({
+        title: '¿ Esta Seguro ?',
+        html: 'Deseas realizar el pago de los servicios prestados por valor  ' + totalt,
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Si'
+    }).then((result) => {
+        if (result.value) {
+            $.ajax({
+                url: "/usuarios/pay_sales/",
+                data: { 'id_usuario': us, 'total': totalt },
+                type: "GET",
+                dataType: "JSON",
+                success: function(data) {
+                    if (data.success) {
+                        sweetMessage('\u00A1Registro exitoso!', '\u00A1 Se ha realizado con \u00E9xito su solicitud!');
+                        setTimeout(function () { location.reload() }, 2000);
+                    } else {
+                        // Mostrar mensaje de error del backend
+                        Swal.fire('Atención', data.message || 'Ocurrió un error inesperado.', 'warning');
                     }
-                });
-
-              
-                      
-            }
-          });
-
+                },
+                error: function(xhr) {
+                    let msg = 'Ocurrió un error inesperado.';
+                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                        msg = xhr.responseJSON.message;
+                    }
+                    Swal.fire('Error', msg, 'error');
+                }
+            });
+        }
     });
+});
     
 
    

@@ -10,7 +10,7 @@ class LoanController extends Controller
 {
     public function index()
     {
-        $loans = Loan::with('user')->get();
+        $loans = Loan::with('user')->orderBy('fecha_prestamo','DESC')->get();
         $empleados = User::all();
         return view('loans.index', compact('loans', 'empleados'));
     }

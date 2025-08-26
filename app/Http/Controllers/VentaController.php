@@ -9,6 +9,7 @@ use App\Model\Producto;
 use App\Model\TipoVehiculo;
 use App\Model\users;
 use App\Model\Venta;
+use App\Model\LlegadaLavador;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\Auth;
@@ -24,7 +25,7 @@ class VentaController extends Controller
         $hoy = date('Y-m-d');
 
         // Ordenar por 'orden' para manejar la cola
-        $llegadas = \App\Model\LlegadaLavador::whereDate('hora_llegada', $hoy)
+        $llegadas = LlegadaLavador::whereDate('hora_llegada', $hoy)
             ->with('empleado')
             //->where('estado', 'activo')
             ->orderBy('orden', 'asc')
@@ -34,7 +35,7 @@ class VentaController extends Controller
         $todosInactivos = $llegadas->count() > 0 && $llegadas->where('estado', 'activo')->count() == 0;
 
         if ($todosInactivos) {
-            $sinPrestador = \App\Model\users::where('name', 'Sin Prestador')->first();
+            $sinPrestador = users::where('name', 'Sin Prestador')->first();
             if ($sinPrestador) {
                 $llegadaFake = new \stdClass();
                 $llegadaFake->empleado = $sinPrestador;
@@ -63,7 +64,7 @@ class VentaController extends Controller
 
         // Empleados que llegaron hoy, ordenados por 'orden'
         $hoy = date('Y-m-d');
-        $llegadas = \App\Model\LlegadaLavador::whereDate('hora_llegada', $hoy)
+        $llegadas = LlegadaLavador::whereDate('hora_llegada', $hoy)
             ->with('empleado')
             //->where('estado', 'activo')
             ->orderBy('orden', 'asc')
@@ -74,7 +75,7 @@ class VentaController extends Controller
 
         // Si todos están inactivos, agregar el usuario "Sin Prestador" (ID 17)
         if ($todosInactivos) {
-            $sinPrestador = \App\Model\users::where('name', 'Sin Prestador')->first();
+            $sinPrestador = users::where('name', 'Sin Prestador')->first();
             if ($sinPrestador) {
                 $llegadaFake = new \stdClass();
                 $llegadaFake->empleado = $sinPrestador;
@@ -139,7 +140,7 @@ class VentaController extends Controller
             $status = (isset($data['id_producto']) && !isset($data['id_detalle_paquete'])) ? 3 : 1;
 
             // Determinar estado de la venta según el usuario
-            $usuario = \App\Model\users::find($data['id_usuario']);
+            $usuario = users::find($data['id_usuario']);
             $estado_venta = ($usuario && $usuario->name == 'Sin Prestador') ? 'pendiente' : 'en_proceso';
 
             $descuento = isset($data['descuento']) ? floatval($data['descuento']) : 0;

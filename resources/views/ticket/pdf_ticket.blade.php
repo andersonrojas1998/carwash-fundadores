@@ -177,7 +177,7 @@
             <tbody>
                 @php $total = 0; @endphp
                 @if($venta->detalle_paquete)
-                    @php $total += $venta->detalle_paquete->precio_venta; @endphp
+                    @php $total += $venta->total_venta; @endphp
                     <tr>
                         <td>{{ $venta->detalle_paquete->paquete->nombre }}</td>
                         <td>1</td>
