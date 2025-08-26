@@ -131,5 +131,5 @@
 @push('custom-scripts')
     {!! Html::script('js/validate.min.js') !!}
     {!! Html::script('js/validator.messages.js') !!}
-    {!! Html::script('lib/sell.js') !!}
+    {!! Html::script('lib/sell.js?v.1') !!}
 @endpush

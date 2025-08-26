@@ -70,7 +70,7 @@
                     
 
   {!! Html::script('//cdn.jsdelivr.net/npm/sweetalert2@10') !!}  
-  {!! Html::script('lib/global.js') !!}
+  {!! Html::script('lib/global.js?v.1') !!}
   <!-- end base js -->
 
 
