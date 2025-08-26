@@ -30,10 +30,10 @@
                         <th>Placa</th>
                         <th># Teléfono</th>
                         <th>Tipo vehículo</th>
-                        <th>Atendido por</th>
-                        <th>Valor Total</th>
                         <th class="text-center">Estado</th>
-                        <th class="text-center"></th>
+                        <th>Atendido por</th>
+                        <th>Valor Total</th>                        
+                        <th class="text-center">Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -65,14 +65,6 @@
                                 No aplica
                             @endif
                         </td>
-                        <td>
-                            @if($venta->user->identificacion=="000")
-                            <label class="badge  badge-xs text-black badge-warning">{{$venta->user->name}}</label>
-                            @else
-                            {{$venta->user->name}}
-                            @endif
-                        </td>
-                        <th class="text-danger">$ {{ number_format($venta->total_venta,0,',','.')}}</th>
                         <td class="text-center align-middle">
                             @if($venta->estado=='pendiente')
                                 <span title="Pendiente" class="estado-icon bg-warning-soft rounded-circle p-2">
@@ -96,6 +88,14 @@
                                 </span>
                             @endif
                         </td>
+                        <td>
+                            @if($venta->user->identificacion=="000")
+                            <label class="badge  badge-xs text-black badge-warning">{{$venta->user->name}}</label>
+                            @else
+                            {{$venta->user->name}}
+                            @endif
+                        </td>
+                        <th class="text-danger">$ {{ number_format($venta->total_venta,0,',','.')}}</th>                        
                         <td>
                         @if($venta->estado=='en_proceso')
                              <a class=" btn-finalizar-venta" 
