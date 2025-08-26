@@ -38,7 +38,7 @@ Route::group(['middleware' => ['auth']], function () {
     require (__DIR__ . '/rt_package.php');
     require (__DIR__ . '/rt_sell.php');
     require (__DIR__ . '/rt_pay.php');
-    require (__DIR__ . '/rt_client.php');
+    require (__DIR__ . '/rt_customer.php');
     require (__DIR__ . '/rt_loans.php');     
 
 

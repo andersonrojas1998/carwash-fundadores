@@ -12,7 +12,7 @@
             </div>
         </div>
         <div class="table-responsive">
-            <table class="table table-striped table-sm DataTable" id="clientes-table">
+            <table class="table table-striped table-sm" id="clientes-table">
                 <thead>
                     <tr>
                         <th>#</th>

@@ -113,7 +113,7 @@
             <div class="card-footer">
             <div class="row justify-content-end">
                     <!-- <button class="btn btn-success d-print-none" ><i class="mdi  mdi-whatsapp  text-white " onclick="window.print()"></i>  Enviar Mensaje</button> &nbsp; -->
-                    {{-- <button class="btn  btn-primary d-print-none btn_generateTicket btn-w-all"  data-id="{{$venta->id}}" > <i class="mdi  mdi-cloud-print text-white "></i>  Imprimir</button> --}}
+                    <button class="btn  btn-primary d-print-none btn_generateTicket btn-w-all"  data-id="{{$venta->id}}" > <i class="mdi  mdi-cloud-print text-white "></i>  Imprimir</button>
                     <button class="btn btn-success" onclick="window.location.href='/venta/create'">
                         <i class="mdi mdi-cart-plus text-white"></i>Registrar Nueva Venta
                     </button>

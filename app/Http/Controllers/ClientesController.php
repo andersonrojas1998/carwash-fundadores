@@ -8,8 +8,7 @@ class ClientesController extends Controller
 {
     public function index(Request $request)
     {
-        $clientes = \App\Model\Clientes::with(['ventas.detalle_paquete.tipo_vehiculo'])->get();
-
+        $clientes = Clientes::with(['ventas.detalle_paquete.tipo_vehiculo'])->get();
         $data = [];
         foreach ($clientes as $key => $cliente) {
             $ventas = $cliente->ventas;

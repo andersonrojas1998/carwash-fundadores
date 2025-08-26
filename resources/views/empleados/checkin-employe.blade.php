@@ -14,7 +14,6 @@
             <table id="dt_checkin" class="table table-bordered table-hover DataTable">
                 <thead>
                     <tr>
-                        <th>#</th>
                         <th>Nombre</th>
                         <th>Hora de llegada</th>
                         <th>Estado</th>
@@ -24,14 +23,13 @@
                 </thead>
                 <tbody>
                     @foreach($llegadas as $key => $llegada)
-                    <tr>
-                        <td>{{ $key + 1 }}</td>
+                    <tr>                        
                         <td>{{ $llegada->empleado->name }}</td>
                         <td>{{ $llegada->hora_llegada }}</td>
                         <td>
                             <span class="badge badge-{{ $llegada->estado == 'activo' ? 'success' : 'danger' }}">{{ $llegada->estado }}</span>                            
                         </td>
-                        <td>{{ $llegada->orden}}</td>
+                        <td class="text-center">{{ $llegada->orden}}</td>
                         <td>
                             <button class="btn btn-xs btn-primary  btn_toggle_estado" data-id="{{ $llegada->id }}" data-estado="{{ $llegada->estado == 'activo' ? 'ocupado' : 'activo' }}">
                                 Cambiar a {{ $llegada->estado == 'activo' ? 'Ocupado' : 'Activo' }}

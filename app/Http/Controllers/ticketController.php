@@ -1,20 +1,16 @@
 <?php
 namespace App\Http\Controllers;
-use App\Models\Venta;
+use App\Model\Venta;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class TicketController extends Controller
 {
     public function ticketPrint($id)
-    {
-      $venta=Venta::find($id);
-      $GAA="Ticket-". $id;    
-      $customPaper = array(0,0,500,600);  
-      $productos=DB::SELECT("CALL sp_groupSalesProduct('$venta->id')  "); 
-      return view('ticket.pdf_ticket',compact('venta','productos')); 
-      $pdf = \PDF::loadView('ticket.pdf_ticket',compact('venta','productos'))->setPaper('A3', 'portrait')->stream($GAA.".pdf");
-      return $pdf;
+    {    
+      $venta = Venta::find($id);
+      $productos = DB::SELECT("CALL sp_groupSalesProduct('$venta->id')");
+      return view('ticket.pdf_ticket', compact('venta', 'productos'));
      
     }
     public function sendMessageWpp(){

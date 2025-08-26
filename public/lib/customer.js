@@ -1,15 +1,25 @@
 $(document).ready(function() {
+dt_customer();
+});
 
 
-     $('#clientes-table').DataTable({
+
+let dt_customer=function(){
+$('#clientes-table').DataTable({
          dom: 'Bfrtip',
         buttons: [
             'csv', 'excel', 'pdf'
         ],
         ajax: {
             url: '/clientes',
-            type: 'GET',
-            dataSrc: 'data'
+            type: 'GET',  
+            dataSrc: function (json) {
+                if (!json.data) {
+                    return [];
+                } else {
+                    return json.data;
+                }
+            }          
         },
         columns: [
             { data: 'no' },
@@ -31,6 +41,4 @@ $(document).ready(function() {
             url: '/assets/js/spanish.json'
         }
     });
-
-
-});
+    } 
