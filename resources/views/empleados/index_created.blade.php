@@ -108,7 +108,7 @@
 @push('custom-scripts')    
     <script src="{{ asset('/js/validate.min.js')}}"></script>
     <script src="{{ asset('/js/validator.messages.js')}}"></script>
-    <script src="{{ asset('/lib/teacher.js?v=1.0.0') }}"></script>    
+    <script src="{{ asset('/lib/teacher.js?v=2.0.0') }}"></script>    
 @endpush
 @push('style')    
 <style>

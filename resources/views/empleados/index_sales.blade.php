@@ -1,11 +1,6 @@
 @extends('layout.master')
 @section('content')
-
-
 <div class="row">
-
-
-
 <div class="card">
 <div class="p-4  bg-light text-center">        
         <h4 class="mb-0">Administraci&oacute;n de Servicios Prestados</h4>        
@@ -36,15 +31,8 @@
     </div>  
  </div>
 
-
-
-
-
-
 <div class="card"> 
-
-
-      <div class="card-body">
+       <div class="card-body">
               <div class="row">
               <div class="col-lg-6">
               <label>Fecha ini:</label>
@@ -377,5 +365,5 @@
 @push('style') 
 @endpush
 @push('custom-scripts')     
-    <script src="{{ asset('/lib/teacher.js?v=1.0.0') }}"></script>
+    <script src="{{ asset('/lib/teacher.js?v=2.0.0') }}"></script>
 @endpush
