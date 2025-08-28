@@ -22,3 +22,6 @@ Route::get('/checkin-employe', 'LlegadaLavadorController@index')->name('checkin.
 Route::post('/checkin-employe/save', 'LlegadaLavadorController@store')->name('checkin.store');
 Route::post('/checkin-employe/estado', 'LlegadaLavadorController@cambiarEstado')->name('checkin.estado');
 Route::get('/loans_by_user/{id}', 'DocenteController@loans_by_user');
+
+Route::get('/usuarios/payment_history/{userId}', 'DocenteController@payment_history');
+Route::get('/usuarios/payment_ticket/{paymentId}', 'DocenteController@payment_ticket');

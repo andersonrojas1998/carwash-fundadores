@@ -306,25 +306,24 @@
         <div class="row">
             <input type="hidden" id="id_usuario">
         <div class="table-responsive">
-                <table id="" class="table table-striped dt_pay_pending">
-                <thead>
-                    <tr>
-                        <th> No. venta</th> 
-                        <th>Fecha Pago</th>
-                        <th> Nombre Cliente</th> 
-                        <th> Combo</th>
-                        <th>Vehiculo</th>
-                        <th>Precio Venta</th>
-                        <th>Porcentaje %</th>                        
-                        <th>Valor Pagado </th>
-                    </tr>                
-                </thead>                 
+                <table id="" class="table table-striped dt_payment_history">
+               <thead>
+                  <tr>
+                      <th>#</th>
+                      <th>Fecha de Pago</th>
+                      <th>Servicios Pagados</th>
+                      <th>Préstamos Descontados</th>
+                      <th>Balance Anterior</th>
+                      <th>Total Pagado</th>
+                      <th>Ticket</th>
+                  </tr>
+              </thead>                
             </table>
             </div>        
         </div>
     <br>
     <hr>
-  <div class="row">
+  <!--<div class="row">
         
     <div class="col-lg-3">
     <div class="card" style="border-bottom:outset;border-radius:15px;">
@@ -342,7 +341,7 @@
                   </div>
                 </div>
         </div>
- </div>  
+ </div> --> 
   
       
     </div>

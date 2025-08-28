@@ -130,8 +130,7 @@ $(document).ready(function() {
         });
 
     });
-
-
+    
     $(document).on("click","#btn_pay_sales",function(e){                                
     let us = $('#id_usuario').val();
     let totalt = $('.payWithDiscount').html();
@@ -153,9 +152,8 @@ $(document).ready(function() {
                 success: function(data) {
                     if (data.success) {
                         sweetMessage('\u00A1Registro exitoso!', '\u00A1 Se ha realizado con \u00E9xito su solicitud!');
-                        setTimeout(function () { location.reload() }, 2000);
+                        window.location.href='/usuarios/payment_ticket/'+data.payment;
                     } else {
-                        // Mostrar mensaje de error del backend
                         Swal.fire('Atención', data.message || 'Ocurrió un error inesperado.', 'warning');
                     }
                 },
@@ -175,7 +173,7 @@ $(document).ready(function() {
    
     $(document).on("click","#btn_show_history",function(){          
         let id=$(this).attr('data-id');
-        dt_pay_pending(id,2);
+         (id,2);
     });  
 
 
@@ -438,4 +436,41 @@ $(document).on('click', '.btn_toggle_estado', function() {
             }
         }
     });
+});
+
+function dt_payment_history(userId) {
+    $('.dt_payment_history').DataTable({
+        "bDestroy": true,
+        dom: 'Bfrtip',
+        buttons: ['excel', 'pdf'],
+        ajax: {
+            url: "/usuarios/payment_history/" + userId,
+            method: "GET",
+            dataSrc: function (json) {
+                return json.data || [];
+            }
+        },
+         columns: [
+        { data: 'id', title: '#' },
+        { data: 'fecha_pago', title: 'Fecha de Pago' },
+        { data: 'total_servicios', title: 'Servicios Pagados', render: data => '$ ' + parseInt(data).toLocaleString('es-CO') },
+        { data: 'total_prestamos', title: 'Préstamos Descontados', render: data => `<span class="font-weight-bold text-danger">$ ${parseInt(data).toLocaleString('es-CO')}</span>` },
+        { data: 'total_balance_anterior', title: 'Balance Anterior', render: data => '$ ' + parseInt(data).toLocaleString('es-CO') },
+        { data: 'total_pagado', title: 'Total Pagado', render: data => `<span class="font-weight-bold text-success">$ ${parseInt(data).toLocaleString('es-CO')}</span>` },
+        {
+            data: 'id',
+            title: 'Ticket',
+            render: function (data) {
+                return `<a href="/usuarios/payment_ticket/${data}" target="_blank" class="btn btn-sm btn-primary"><i class="mdi mdi-printer"></i> Imprimir</a>`;
+            }
+        }
+    ]
+    });
+}
+
+// Evento para mostrar el historial en el modal
+$(document).on("click", "#btn_show_history", function () {
+    let id = $(this).attr('data-id');
+    dt_payment_history(id);
+    $('#mdl_pay_history').modal('show');
 });

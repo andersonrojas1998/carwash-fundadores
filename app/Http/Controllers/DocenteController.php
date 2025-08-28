@@ -179,7 +179,6 @@ class DocenteController extends Controller
             $totalPago += round($venta->total_venta * $venta->porcentaje_paquete / 100);
         }
 
-        // Validar que existan servicios pendientes y saldo a pagar
         if ($ventas->count() == 0 || $totalPago <= 0) {
             return response()->json([
                 'success' => false,
@@ -198,20 +197,64 @@ class DocenteController extends Controller
             ->orderBy('fecha_prestamo')
             ->get();
 
-        $totalPrestamos = $prestamos->sum('valor');       
+        $totalPrestamos = $prestamos->sum('valor');
         $saldoFinal = $totalPago + $balance - $totalPrestamos;
 
-        // Si el saldo final es negativo, todos los préstamos quedan pagados y el saldo negativo se actualiza
+        // --- REGISTRO DEL PAGO Y DETALLE ---
+        $payment = \App\Model\EmployeePayment::create([
+            'user_id' => $userId,
+            'total_servicios' => $totalPago,
+            'total_prestamos' => $totalPrestamos,
+            'total_balance_anterior' => $balance,
+            'total_pagado' => $saldoFinal,
+            'fecha_pago' => now()
+        ]);
+
+        // Detalle de servicios pagados
+        foreach ($ventas as $venta) {
+            \App\Model\EmployeePaymentDetail::create([
+                'payment_id' => $payment->id,
+                'tipo' => 'servicio',
+                'referencia_id' => $venta->id,
+                'valor' => round($venta->total_venta * $venta->porcentaje_paquete / 100)
+            ]);
+        }
+        // Detalle de préstamos descontados
+        foreach ($prestamos as $prestamo) {
+            \App\Model\EmployeePaymentDetail::create([
+                'payment_id' => $payment->id,
+                'tipo' => 'prestamo',
+                'referencia_id' => $prestamo->id,
+                'valor' => $prestamo->valor
+            ]);
+        }
+
+        // --- REGISTRO DEL MOVIMIENTO DE BALANCE ---
+        \App\Model\EmployeeBalanceMovement::create([
+            'user_id' => $userId,
+            'saldo_anterior' => $balance,
+            'movimiento' => $saldoFinal - $balance,
+            'saldo_nuevo' => $saldoFinal,
+            'motivo' => 'Pago de servicios',
+            'created_at' => now()
+        ]);
+
+        // --- ACTUALIZACIÓN DEL BALANCE ACTUAL ---
         if ($saldoFinal < 0) {
-            foreach ($prestamos as $prestamo) {
-                \DB::table('loans')->where('id', $prestamo->id)->update(['fecha_pago' => now()]);
-            }
-            \DB::table('employee_balances')->updateOrInsert(
+            \App\Model\EmployeeBalance::updateOrInsert(
                 ['user_id' => $userId],
                 ['saldo' => $saldoFinal, 'updated_at' => now()]
             );
         } else {
-            // Paga préstamos hasta donde alcance, el resto queda pendiente
+            \App\Model\EmployeeBalance::where('user_id', $userId)->delete();
+        }
+
+        // Marcar préstamos como pagados si corresponde
+        if ($saldoFinal < 0) {
+            foreach ($prestamos as $prestamo) {
+                \DB::table('loans')->where('id', $prestamo->id)->update(['fecha_pago' => now()]);
+            }
+        } else {
             $restante = $totalPago + $balance;
             foreach ($prestamos as $prestamo) {
                 if ($restante >= $prestamo->valor) {
@@ -221,11 +264,9 @@ class DocenteController extends Controller
                     break;
                 }
             }
-            // Si ya no hay deuda, elimina el balance
-            \DB::table('employee_balances')->where('user_id', $userId)->delete();
         }
 
-        // 6. Marcar ventas como pagadas
+        // Marcar ventas como pagadas
         \DB::table('venta')
             ->where('id_usuario', $userId)
             ->where('id_estado_venta', 1)
@@ -236,8 +277,8 @@ class DocenteController extends Controller
             ]);
 
         return response()->json([
-            'success' => true,
-            'saldo' => $saldoFinal
+            'success' => true,            
+            'payment' => $payment->id
         ]);
     }
     
@@ -298,5 +339,31 @@ class DocenteController extends Controller
             ->get();
 
         return response()->json($loans);
+    }
+
+    public function payment_history($userId)
+    {
+        $pagos = \App\Model\EmployeePayment::where('user_id', $userId)
+            ->orderBy('fecha_pago', 'desc')
+            ->get();
+
+        $data = [];
+        foreach ($pagos as $pago) {
+            $data[] = [
+                'id' => $pago->id,
+                'fecha_pago' => date('Y-m-d H:i', strtotime($pago->fecha_pago)),
+                'total_servicios' => $pago->total_servicios,
+                'total_prestamos' => $pago->total_prestamos,
+                'total_balance_anterior' => $pago->total_balance_anterior,
+                'total_pagado' => $pago->total_pagado,
+            ];
+        }
+        return response()->json(['data' => $data]);
+    }
+    public function payment_ticket($paymentId)
+    {
+        $pago = \App\Model\EmployeePayment::findOrFail($paymentId);
+        $empleado = \App\User::find($pago->user_id);
+    return view('empleados.payment_ticket', compact('pago', 'empleado'));
     }
 }
