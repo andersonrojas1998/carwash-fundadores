@@ -21,7 +21,7 @@
                 <h6>No Responsable del IVA</h6>
             </div>-->
             <div class="col-3" style="
-                background-image: url('/icon.jpg');
+                background-image: url('/icon.png');
                 background-repeat: no-repeat;
                 background-size: 54%;
                 background-position: center;"></div>

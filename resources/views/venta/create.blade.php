@@ -2,7 +2,7 @@
 @section('content')
 <div class="card shadow-lg border-0 mt-4" style="border-radius:18px;">
     <div class="card-header bg-primary text-white d-flex align-items-center" style="border-radius:18px 18px 0 0;">
-    <img src="/icon.jpg" alt="Logo" style="height:40px;width:auto;margin-right:15px;border-radius:10px;">
+    <img src="/icon.png" alt="Logo" style="height:40px;width:auto;margin-right:15px;border-radius:10px;">
     <h3 class="mb-0"><i class="mdi mdi-cart-plus"></i> Registrar Venta</h3>
 </div>
     <form id="form_create_sell" action="{{route('venta.store')}}" method="POST" autocomplete="off">

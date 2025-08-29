@@ -26,7 +26,7 @@
         <div class="total">Total pagado: $ {{ number_format($pago->total_pagado, 0, ',', '.') }}</div>
         <div class="footer">
             ¡Gracias por tu trabajo!<br>
-            Car Wash C21
+            Car Wash - LOS FUNDADORES
         </div>
         <button class="print-btn" onclick="window.print()">Imprimir</button>
     </div>

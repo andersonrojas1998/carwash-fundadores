@@ -11,11 +11,11 @@
         <div class="row w-100">
         <div class="col-lg-4"></div>
         <div class="col-lg-4">
-            <img class="rounded" src="{{ asset('/icon.jpg') }}" height="102" width="108">                        
+            <img class="rounded" src="{{ asset('/icon.png') }}" height="102" width="108">                        
         </div>            
         <div class="col-lg-12">
         <figcaption class="blockquote-footer text-center">
-        C21  CAR WASH</cite>
+        CAR WASH - LOS FUNDADORES</cite>
         </figcaption>        
         </div>
         </div>        
@@ -74,7 +74,7 @@
           <a href="#">Terms</a>
         </li>
       </ul>
-      <p class="footer-text text-center">copyright © 2023 C21 Car Wash.</p>
+      <p class="footer-text text-center">copyright © 2023 CAR WASH LOS FUNDADORES.</p>
     </div>
   </div>
 </div>

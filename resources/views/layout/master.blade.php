@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <title>C21 CAR WASH</title>
+  <title>CAR WASH LOS FUNDADORES</title>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -10,7 +10,7 @@
   <meta name="_token" content="{{ csrf_token() }}">  
 
   <!-- Favicon -->
-  <link rel="shortcut icon" href="{{ asset('/icon.jpg') }}">
+  <link rel="shortcut icon" href="{{ asset('/icon.png') }}">
 
   <!-- Preconnect a CDN externo -->
   <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>

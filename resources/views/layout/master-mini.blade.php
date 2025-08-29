@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>C21 CAR WASH</title>
+<title>CAR WASH LOS FUNDADORES</title>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -9,7 +9,7 @@
   <!-- CSRF Token -->
   <meta name="_token" content="{{ csrf_token() }}">
     
-  <link rel="shortcut icon" href="{{ asset('/icon.jpg') }}">
+  <link rel="shortcut icon" href="{{ asset('/icon.png') }}">
 
   <!-- plugin css -->
   {!! Html::style('assets/plugins/@mdi/font/css/materialdesignicons.min.css') !!}
