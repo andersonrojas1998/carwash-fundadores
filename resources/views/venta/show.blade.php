@@ -7,7 +7,7 @@
         background-size: 20%;
     ">
         <div class="d-flex justify-content-between mb-3">
-            <div class="col-4">
+            <div class="col-6">
                 <h1 class="mt-3 ml-3"><strong>Factura</strong></h1>
                 <div class="d-block">
                     <strong class="ml-3"># de orden&nbsp;:&nbsp;</strong><label>{{$venta->id}}</label>
@@ -131,5 +131,5 @@
 @push('custom-scripts')
     {!! Html::script('js/validate.min.js') !!}
     {!! Html::script('js/validator.messages.js') !!}
-    {!! Html::script('lib/sell.js?v.1') !!}
+    {!! Html::script('lib/sell.js?v.2') !!}
 @endpush

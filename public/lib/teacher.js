@@ -131,6 +131,29 @@ $(document).ready(function() {
 
     });
     
+    $('#mdl_pay_history').on('show.bs.modal', function () {
+        if (isMobileOrTablet()) {
+            $(this).find('.modal-dialog').css('width', '100%').css('max-width', '100%').css('margin', '0');
+        } else {
+            $(this).find('.modal-dialog').css('width', '').css('max-width', '').css('margin', '');
+        }
+    });
+    $('#mdl_checkin').on('show.bs.modal', function () {
+        if (isMobileOrTablet()) {
+            $(this).find('.modal-dialog').css('width', '100%').css('max-width', '100%').css('margin', '0');
+        } else {
+            $(this).find('.modal-dialog').css('width', '').css('max-width', '').css('margin', '');
+        }
+    });
+    
+    $('#mdl_paySales').on('show.bs.modal', function () {
+        if (isMobileOrTablet()) {
+            $(this).find('.modal-dialog').css('width', '100%').css('max-width', '100%').css('margin', '0');
+        } else {
+            $(this).find('.modal-dialog').css('width', '').css('max-width', '').css('margin', '');
+        }
+    });
+    
     $(document).on("click","#btn_pay_sales",function(e){                                
     let us = $('#id_usuario').val();
     let totalt = $('.payWithDiscount').html();
@@ -152,7 +175,8 @@ $(document).ready(function() {
                 success: function(data) {
                     if (data.success) {
                         sweetMessage('\u00A1Registro exitoso!', '\u00A1 Se ha realizado con \u00E9xito su solicitud!');
-                        window.location.href='/usuarios/payment_ticket/'+data.payment;
+                        setTimeout(function(){ location.reload(); }, 1000);
+                        //window.location.href='/usuarios/payment_ticket/'+data.payment;
                     } else {
                         Swal.fire('Atención', data.message || 'Ocurrió un error inesperado.', 'warning');
                     }
@@ -200,6 +224,7 @@ $(document).ready(function() {
     });
 });
 
+    
 
 var dt_teacher=function(){
     $('#dt_teacher').DataTable({        
