@@ -66,7 +66,7 @@
                 <div class="col-md-4 mb-3">
                     <label for="input_discount" class="font-weight-bold">Descuento</label>
                     <div class="input-group">
-                        <input type="number" min="0" step="1" id="input_discount" name="descuento" class="form-control" placeholder="Descuento en $">
+                        <input type="number" min="0" step="1" id="input_discount" name="descuento" class="form-control" placeholder="Descuento en $" disabled>
                         <div class="input-group-append">
                             <span class="input-group-text bg-light"><i class="mdi mdi-tag"></i></span>
                         </div>
@@ -83,7 +83,7 @@
                         @foreach($tipos_vehiculo as $tipo_vehiculo)
                         <label class="btn btn-outline-primary m-1">
                             <input type="radio" name="id_tipo_vehiculo" class="radio-btn-vehicle-type" value="{{$tipo_vehiculo->id}}" data-url="{{route('paquete.packagesByVehicleType',[$tipo_vehiculo->id])}}">
-                            <img src="{{asset($tipo_vehiculo->imagen)}}" class="rounded" alt="{{$tipo_vehiculo->descripcion}}" data-toggle="tooltip" title="{{$tipo_vehiculo->descripcion}}" height="90px" width="140px">
+                            <img src="{{asset($tipo_vehiculo->imagen)}}" class="rounded" alt="{{$tipo_vehiculo->descripcion}}" data-toggle="tooltip" title="{{$tipo_vehiculo->descripcion}}" height="150px" width="150px">
                         </label>
                         @endforeach
                     </div>
@@ -166,5 +166,5 @@ input[type="text"], input[type="number"], select.form-control {
 @push('custom-scripts')
     {!! Html::script('js/validate.min.js') !!}
     {!! Html::script('js/validator.messages.js') !!}
-    {!! Html::script('lib/sell.js?v.1') !!}
+    {!! Html::script('lib/sell.js?v.2') !!}
 @endpush

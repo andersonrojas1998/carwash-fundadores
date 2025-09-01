@@ -495,6 +495,14 @@ $(document).on('click', '.btn-finalizar-venta', function() {
     $('#modal_finalizar_venta').modal('show');
 });
 
+ $('#modal_finalizar_venta').on('show.bs.modal', function () {
+        if (isMobileOrTablet()) {
+            $(this).find('.modal-dialog').css('width', '100%').css('max-width', '100%').css('margin', '0');
+        } else {
+            $(this).find('.modal-dialog').css('width', '').css('max-width', '').css('margin', '');
+        }
+    });
+
 $('#form_finalizar_venta').on('submit', function(e) {
     e.preventDefault();
     var id_venta = $('#finalizar_id_venta').val();
