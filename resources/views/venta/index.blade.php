@@ -157,5 +157,5 @@
 
 @endpush
 @push('custom-scripts')
-    {!! Html::script('lib/sell.js?v.1') !!}
+    {!! Html::script('lib/sell.js?v.2') !!}
 @endpush

@@ -58,7 +58,7 @@
   {!! Html::script('https://cdn.jsdelivr.net/npm/sweetalert2@10') !!}
 
   <!-- Global JS -->
-  {!! Html::script('lib/global.js?v=1') !!}
+  {!! Html::script('lib/global.js?v=2') !!}
   {!! Html::script('assets/js/settings.all.min.js') !!}
 
   @stack('plugin-scripts')

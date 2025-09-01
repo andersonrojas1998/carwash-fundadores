@@ -24,6 +24,16 @@ else if(window.innerWidth < 1200){
 }
 
 
+
+ $('#modal_edit_user_service').on('show.bs.modal', function () {
+        if (isMobileOrTablet()) {
+            $(this).find('.modal-dialog').css('width', '100%').css('max-width', '100%').css('margin', '0');
+        } else {
+            $(this).find('.modal-dialog').css('width', '').css('max-width', '').css('margin', '');
+        }
+    });
+
+
   $.extend($.fn.dataTable.defaults, {
 		autoWidth : false,
 		dom : '<"datatable-header"fl><"datatable-scroll"t><"datatable-footer"ip>',
@@ -222,3 +232,8 @@ var sweetMessage= function(title,msg,type='success'){
         }
     });
 }
+
+// Detectar dispositivo móvil/tablet y ajustar el modal de pago
+    function isMobileOrTablet() {
+        return /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(navigator.userAgent.toLowerCase());
+    }
