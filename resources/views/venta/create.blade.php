@@ -66,7 +66,7 @@
                 <div class="col-md-4 mb-3">
                     <label for="input_discount" class="font-weight-bold">Descuento</label>
                     <div class="input-group">
-                        <input type="number" min="0" step="1" id="input_discount" name="descuento" class="form-control" placeholder="Descuento en $" disabled>
+                        <input type="number" min="0" step="1" id="input_discount" name="descuento" class="form-control" placeholder="Descuento en $">
                         <div class="input-group-append">
                             <span class="input-group-text bg-light"><i class="mdi mdi-tag"></i></span>
                         </div>
