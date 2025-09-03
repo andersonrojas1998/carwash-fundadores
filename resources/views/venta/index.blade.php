@@ -101,11 +101,11 @@
                                 <span class="badge badge-warning d-flex align-items-center justify-content-center" style="gap:4px;">
                                     <i class="mdi mdi-timer-sand text-dark"></i> Pendiente Pago
                                 </span>
-                            @elseif($venta->medio_pago=='Efectivo')
+                            @elseif($venta->medio_pago=='efectivo')
                                 <span class="badge badge-success d-flex align-items-center justify-content-center" style="gap:4px;">
                                     <i class="mdi mdi-cash text-dark"></i> Efectivo
                                 </span>
-                            @elseif($venta->medio_pago=='Transferencia')
+                            @elseif($venta->medio_pago=='transferencia')
                                 <span class="badge badge-info  d-flex align-items-center justify-content-center" style="gap:4px;">
                                     <i class="mdi mdi-bank-transfer text-white"></i> Transferencia
                                 </span>
