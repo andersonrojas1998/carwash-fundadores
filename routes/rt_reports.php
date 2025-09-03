@@ -10,4 +10,5 @@ Route::group(['prefix' => 'reports'], function(){
     Route::get('ventas-servicio', 'ReportsController@index_sales_month_day'); 
     Route::get('utilidad-mes', 'ReportsController@index_month_utility'); 
     Route::get('getUtilityMonth', 'ReportsController@getUtilityMonth'); 
+    Route::get('sales_summary/{ini}/{end}', 'ReportsController@sales_summary');
 });

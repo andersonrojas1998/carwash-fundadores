@@ -274,6 +274,11 @@ class VentaController extends Controller
         $productos=DB::SELECT("CALL sp_groupSalesProduct('$venta->id')  ");         
         return view("venta.show", compact('venta','productos'));
     }
+
+    public function cierreVentas()
+    {
+        return view("reports.sales_summary");
+    }
     public function showCopy($ventas)
     {
         $venta = Venta::find($ventas);
@@ -335,4 +340,5 @@ class VentaController extends Controller
             return response()->json(['success' => false, 'error' => $e->getMessage()]);
         }
     }
+
 }

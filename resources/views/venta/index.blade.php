@@ -29,9 +29,10 @@
                         <th>Cliente</th>
                         <th>Placa</th>
                         <th># Teléfono</th>
-                        <th>Tipo vehículo</th>
+                        <th>Vehículo/Clave</th>
                         <th class="text-center">Estado</th>
                         <th>Atendido por</th>
+                        <th>Medio Pago</th>
                         <th>Valor Total</th>                        
                         <th class="text-center">Acciones</th>
                     </tr>
@@ -60,7 +61,7 @@
                         </td>
                         <td>
                             @if($venta->detalle_paquete != null)
-                                {{$venta->detalle_paquete->tipo_vehiculo->descripcion}}
+                                {{$venta->detalle_paquete->tipo_vehiculo->descripcion}} {{  (!is_null($venta->clave_vehiculo)? '-'.$venta->clave_vehiculo:'')  }} 
                             @else
                                 No aplica
                             @endif
@@ -95,6 +96,25 @@
                             {{$venta->user->name}}
                             @endif
                         </td>
+                        <td>
+                            @if($venta->medio_pago=='pendiente_pago')
+                                <span class="badge badge-warning d-flex align-items-center justify-content-center" style="gap:4px;">
+                                    <i class="mdi mdi-timer-sand text-dark"></i> Pendiente Pago
+                                </span>
+                            @elseif($venta->medio_pago=='Efectivo')
+                                <span class="badge badge-success d-flex align-items-center justify-content-center" style="gap:4px;">
+                                    <i class="mdi mdi-cash text-dark"></i> Efectivo
+                                </span>
+                            @elseif($venta->medio_pago=='Transferencia')
+                                <span class="badge badge-info  d-flex align-items-center justify-content-center" style="gap:4px;">
+                                    <i class="mdi mdi-bank-transfer text-white"></i> Transferencia
+                                </span>
+                            @else
+                                <span class="badge badge-secondary d-flex align-items-center justify-content-center" style="gap:4px;">
+                                    <i class="mdi mdi-credit-card-outline text-secondary"></i> {{$venta->medio_pago}}
+                                </span>
+                            @endif
+                        </td> 
                         <th class="text-danger">$ {{ number_format($venta->total_venta,0,',','.')}}</th>                        
                         <td>
                         @if($venta->estado=='en_proceso')

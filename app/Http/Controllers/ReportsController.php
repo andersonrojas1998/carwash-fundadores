@@ -154,6 +154,73 @@ class ReportsController extends Controller
         return json_encode(EgresosConcepto::all());
     }
 
+    public function sales_summary($ini, $end)
+    {
+        $dateini = date('Y-m-d', strtotime($ini));
+        $dateend = date('Y-m-d', strtotime($end));
+
+        // Ventas por día
+        $ventasPorDia = DB::table('venta')
+            ->select(DB::raw("DATE(fecha) as dia"), DB::raw("COUNT(*) as cantidad"), DB::raw("SUM(total_venta) as total"))
+            ->whereBetween(DB::raw('DATE(fecha)'), [$dateini, $dateend])
+            ->groupBy(DB::raw("DATE(fecha)"))
+            ->orderBy('dia')
+            ->get();
+
+        // Ventas discriminadas por medio de pago
+        $ventasPorMedio = DB::table('venta')
+            ->select('medio_pago', DB::raw('SUM(total_venta) as total'), DB::raw('COUNT(*) as cantidad'))
+            ->whereBetween(DB::raw('DATE(fecha)'), [$dateini, $dateend])
+            ->groupBy('medio_pago')
+            ->get();
+
+        // Ventas totales
+        $ventasTotales = DB::table('venta')
+            ->select(DB::raw('SUM(total_venta) as total'), DB::raw('COUNT(*) as cantidad'))
+            ->whereBetween(DB::raw('DATE(fecha)'), [$dateini, $dateend])
+            ->first();
+
+        // Loans (préstamos/descuentos) realizados en el periodo, con nombre de usuario
+        $loans = DB::table('loans')
+            ->join('users', 'loans.id_usuario', '=', 'users.id')
+            ->select('loans.id', 'loans.id_usuario', 'users.name as empleado', 'loans.valor', 'loans.concepto', 'loans.fecha_prestamo')
+            ->whereBetween(DB::raw('DATE(loans.fecha_prestamo)'), [$dateini, $dateend])
+            ->get();
+        $totalLoans = $loans->sum('valor');
+
+        // Resumen por día para gráfico
+        $dias = [];
+        $montos = [];
+        foreach ($ventasPorDia as $v) {
+            $dias[] = $v->dia;
+            $montos[] = $v->total;
+        }
+
+        // Medios de pago
+        $medios = [
+            'Efectivo' => 0,
+            'Transferencia' => 0,
+            'pendiente_pago' => 0,
+            'Otro' => 0
+        ];
+        foreach ($ventasPorMedio as $v) {
+            if (isset($medios[$v->medio_pago])) {
+                $medios[$v->medio_pago] = $v->total;
+            } else {
+                $medios['Otro'] += $v->total;
+            }
+        }
+
+        return response()->json([
+            'ventas_por_dia' => $ventasPorDia,
+            'ventas_totales' => $ventasTotales,
+            'ventas_por_medio' => $medios,
+            'dias' => $dias,
+            'montos' => $montos,
+            'loans' => $loans,
+            'total_loans' => $totalLoans,
+        ]);
+    }
      
 
      
