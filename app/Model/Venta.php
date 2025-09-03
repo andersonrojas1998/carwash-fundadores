@@ -15,7 +15,9 @@ class Venta extends Model
         'id_usuario',
         "id_estado_venta",
         'medio_pago',
-        'estado'  //pendiente, en_proceso, finalizado
+        'estado',  //pendiente, en_proceso, finalizado
+        'clave_vehiculo',
+
     ];
 
     public function setPlacaAttribute($value)

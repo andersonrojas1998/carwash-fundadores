@@ -44,7 +44,7 @@
             </div>
 
             <div class="row mb-4">
-                <div class="col-md-4 mb-3">
+                <div class="col-md-3 mb-3">
                     <label class="font-weight-bold">¿Quién presta el servicio?</label>
                     <select class="form-control select2" name="id_usuario" required>
                         @foreach($llegadas as $llegada)
@@ -55,7 +55,7 @@
                         @endforeach
                     </select>
                 </div>
-                <div class="col-md-4 mb-3">
+                <div class="col-md-3 mb-3">
                     <label for="input_payment_method" class="font-weight-bold">Medio de Pago</label>
                     <select class="form-control select2" name="medio_pago" id="input_payment_method" required>
                         <option value="pendiente_pago" selected>Pendiente Pago</option>
@@ -63,13 +63,19 @@
                         <option value="transferencia">Transferencia</option>
                     </select>
                 </div>
-                <div class="col-md-4 mb-3">
+                <div class="col-md-3 mb-3">
                     <label for="input_discount" class="font-weight-bold">Descuento</label>
                     <div class="input-group">
                         <input type="number" min="0" step="1" id="input_discount" name="descuento" class="form-control" placeholder="Descuento en $">
                         <div class="input-group-append">
                             <span class="input-group-text bg-light"><i class="mdi mdi-tag"></i></span>
                         </div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label for="input_password_card" class="font-weight-bold">Clave</label>
+                    <div class="input-group">
+                        <input type="number" min="0" step="1" id="input_password_card" name="clave_vehiculo" class="form-control" placeholder="Clave">                        
                     </div>
                 </div>
             </div>

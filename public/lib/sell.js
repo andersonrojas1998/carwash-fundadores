@@ -3,10 +3,10 @@ $(function(){
     
 
     $('#table-sell').DataTable(
-        {
-        dom: 'Bfrtip',
-        buttons: ['excel', 'pdf'],
-        order: [[0, 'desc']]
+        {        
+        order: [[0, 'desc']],
+        pageLength: 100,
+        lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, "Todos"]]
     }
     );
 
