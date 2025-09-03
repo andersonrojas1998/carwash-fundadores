@@ -14,8 +14,8 @@
             <div class="form-group">
                 <label for="finalizar_medio_pago">Método de Pago</label>
                 <select id="finalizar_medio_pago" name="medio_pago" class="form-control select2" style="width:100%" required>
-                    <option value="Efectivo">Efectivo</option>
-                    <option value="Transferencia">Transferencia</option>
+                    <option value="efectivo">Efectivo</option>
+                    <option value="transferencia">Transferencia</option>
                 </select>
             </div>
         </div>
