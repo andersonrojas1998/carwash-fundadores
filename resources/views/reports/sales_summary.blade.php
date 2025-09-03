@@ -61,11 +61,11 @@ $(function(){
                                 <ul class="list-group list-group-flush">
                                     <li class="list-group-item d-flex justify-content-between align-items-center">
                                         <span><i class="bi bi-cash-coin text-success"></i> Efectivo</span>
-                                        <span class="badge badge-success badge-pill">$ ${parseInt(data.ventas_por_medio.Efectivo).toLocaleString('es-CO')}</span>
+                                        <span class="badge badge-success badge-pill">$ ${parseInt(data.ventas_por_medio.efectivo).toLocaleString('es-CO')}</span>
                                     </li>
                                     <li class="list-group-item d-flex justify-content-between align-items-center">
                                         <span><i class="bi bi-bank text-info"></i> Transferencia</span>
-                                        <span class="badge badge-info badge-pill">$ ${parseInt(data.ventas_por_medio.Transferencia).toLocaleString('es-CO')}</span>
+                                        <span class="badge badge-info badge-pill">$ ${parseInt(data.ventas_por_medio.transferencia).toLocaleString('es-CO')}</span>
                                     </li>
                                     <li class="list-group-item d-flex justify-content-between align-items-center">
                                         <span><i class="bi bi-clock-history text-warning"></i> Pendiente Pago</span>
