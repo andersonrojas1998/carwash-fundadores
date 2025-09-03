@@ -198,8 +198,8 @@ class ReportsController extends Controller
 
         // Medios de pago
         $medios = [
-            'Efectivo' => 0,
-            'Transferencia' => 0,
+            'efectivo' => 0,
+            'transferencia' => 0,
             'pendiente_pago' => 0,
             'Otro' => 0
         ];
