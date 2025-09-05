@@ -2,6 +2,7 @@
 @section('content')
 <div class="card">
     <div class="card-body">
+        <meta name="csrf-token" content="{{ csrf_token() }}">
         <div class="d-flex justify-content-between bd-highlight mb-3">
             <div class="d-flex justify-content-start bd-highlight">
                 <div class="p-4 bg-light">
@@ -116,7 +117,7 @@
                             @endif
                         </td> 
                         <th class="text-danger">$ {{ number_format($venta->total_venta,0,',','.')}}</th>                        
-                        <td>
+                        <td>                    
                         @if($venta->estado=='en_proceso')
                              <a class=" btn-finalizar-venta" 
                                 title="Finalizar Venta"   data-toggle="tooltip"
@@ -134,6 +135,13 @@
                             <a href="{{route('venta.edit',[$venta->id])}}" data-venta="{{ $venta->id }}" data-id="{{ $venta->user->id }}" title="Editar Venta"   data-toggle="tooltip">
                                 <i class="mdi mdi-pencil-box-outline text-primary mdi-24px"></i>
                             </a>&nbsp;&nbsp;
+                            <a href="javascript:void(0);" 
+                               class="btn-delete-venta" 
+                               data-id="{{ $venta->id }}" 
+                               title="Eliminar Venta" 
+                               data-toggle="tooltip">
+                                <i class="mdi mdi-delete-forever text-danger mdi-24px"></i>
+                            </a>
                         @endif                           
                             <a href="{{route('venta.show',[$venta->id])}}" title="Ver detalle" data-toggle="tooltip">
                                 <i class="mdi mdi-point-of-sale text-warning mdi-24px"></i>
