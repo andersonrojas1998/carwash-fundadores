@@ -18,3 +18,4 @@ Route::get('sendMessageWpp', 'TicketController@sendMessageWpp');
 Route::get('/buscar-cliente-placa', 'VentaController@buscarClientePlaca');
 Route::get('/cierre-ventas', 'VentaController@cierreVentas')->name('venta.cierre-ventas');
 Route::post('/venta/finalizar', 'VentaController@finalizarVenta')->name('venta.finalizar');
+Route::delete('/venta/{id}', 'VentaController@destroy')->name('venta.destroy');

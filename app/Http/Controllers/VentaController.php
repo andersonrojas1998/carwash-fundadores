@@ -341,4 +341,25 @@ class VentaController extends Controller
         }
     }
 
+    public function destroy($id)
+    {
+        try {
+            $venta = \App\Model\Venta::findOrFail($id);
+
+            // Solo permitir eliminar si no está pagada ni finalizada
+            if (
+                $venta->estado_venta->id != 2 &&
+                $venta->estado_venta->id != 3 &&
+                $venta->estado != 'finalizado'
+            ) {
+                $venta->delete();
+                return response()->json(['success' => true]);
+            } else {
+                return response()->json(['success' => false, 'message' => 'No se puede eliminar una venta pagada o finalizada.']);
+            }
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage()]);
+        }
+    }
+
 }

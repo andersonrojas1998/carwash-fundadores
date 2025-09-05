@@ -550,4 +550,39 @@ $(document).on('DOMSubtreeModified', '#text_importe_total', actualizarTotalConDe
 // También al cargar un paquete/producto
 $(document).on('click change', '.button_package, #select-product, #input-quantity-product', actualizarTotalConDescuento);
 
+$(document).on('click', '.btn-delete-venta', function() {
+    let id = $(this).data('id');
+    Swal.fire({
+        title: '¿Eliminar venta?',
+        text: "Esta acción no se puede deshacer.",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Sí, eliminar',
+        cancelButtonText: 'Cancelar'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: '/venta/' + id,
+                type: 'DELETE',
+                data: {
+                    _token: $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function(resp) {
+                    if (resp.success) {
+                        Swal.fire('Eliminado', 'La venta ha sido eliminada.', 'success');
+                        setTimeout(() => location.reload(), 1000);
+                    } else {
+                        Swal.fire('Error', resp.message || 'No se pudo eliminar la venta.', 'error');
+                    }
+                },
+                error: function() {
+                    Swal.fire('Error', 'No se pudo eliminar la venta.', 'error');
+                }
+            });
+        }
+    });
+});
+
 
