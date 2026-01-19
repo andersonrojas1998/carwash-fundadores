@@ -19,7 +19,7 @@ class LlegadaLavadorController extends Controller
         $empleadosLlegadosIds = $llegadas->pluck('id_empleado')->toArray();
 
         // Listar empleados que NO están en la lista de llegadas
-        $empleados = User::whereNotIn('id', $empleadosLlegadosIds)->get();
+        $empleados = User::whereNotIn('id', $empleadosLlegadosIds)->where('estado',1)->get();
 
         return view('empleados.checkin-employe', compact('llegadas', 'empleados'));
     }
